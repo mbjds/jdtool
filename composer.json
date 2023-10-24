@@ -1,0 +1,15 @@
+{
+    "name": "mb/jdcustom",
+    "autoload": {
+        "psr-4": {
+            "JDCustom\\": "class/"
+        }
+    },
+    "authors": [
+        {
+            "name": "mbojarski1",
+            "email": "m.bojarski@jds-group.eu"
+        }
+    ],
+    "require": {}
+}
