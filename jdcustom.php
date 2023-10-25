@@ -15,19 +15,7 @@
 require 'vendor/autoload.php';
 
 use JDCustom\jdHelpers;
-function add_custom_script_to_wp_head() {?>
-	<script type="text/javascript">
-        document.addEventListener("DOMContentLoaded", function () {
-            var  accept = "Akceptuj";
-            var more = "Więcej...";
-            document.getElementsByClassName('flatsome-cookies__accept-btn')[0].innerHTML = '<span> <?php echo get_option('cookie_accept') ?></span>';
-            document.getElementsByClassName('flatsome-cookies__more-btn')[0].innerHTML = '<span> <?php echo get_option('cookie_more') ?></span>';
-        });
 
-	</script>
-<?php
-}
-add_action( 'wp_head', 'add_custom_script_to_wp_head' );
 function custom_phone_number_error_message($error) {
 	if ($error === '<strong>Numer telefonu płatnika</strong> nie jest poprawnym numerem telefonu.') {
 		$error = '';
@@ -82,6 +70,4 @@ function custom_enqueue_checkout_script() {
 
 }
 add_action('wp_enqueue_scripts', 'custom_enqueue_checkout_script');
-
-new JDCustom\jd_admin_page();
-new JDCustom\jd_checkout();
+new JDCustom\jdinit();
