@@ -1,3 +1,6 @@
 .vat-hidden{
     display: none;
 }
+.jd-row-wide{
+    width: 100% !important;
+}

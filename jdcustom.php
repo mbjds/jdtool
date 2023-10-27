@@ -17,7 +17,7 @@ require 'vendor/autoload.php';
 use JDCustom\jdinit;
 
 function custom_phone_number_error_message( $error ) {
-	if ( $error === '<strong>Numer telefonu płatnika</strong> nie jest poprawnym numerem telefonu.' ) {
+	if ( $error === '<strong>Numer telefonu płatnika</strong> nie jest poprawnym numerem telefonu.' || $error === '<strong>Numer telefonu płatnika</strong> jest wymaganym polem.'  ) {
 		$error = '';
 	}
 
@@ -42,7 +42,7 @@ function jds_custom_checkout_field_process() {
 	if ( $_POST['vat_no'] === '' && $_POST['vat_choose'] ) {
 		wc_add_notice( get_option( 'vat_empty' ), 'error' );
 
-	} elseif ( $_POST['vat_no'] !== '' && ! jdHelpers::checkNip( $_POST['vat_no'] ) && $_POST['vat_choose'] ) {
+	} elseif ( $_POST['vat_no'] !== '' && ! \JDCustom\jdHelpers::checkNip( $_POST['vat_no'] ) && $_POST['vat_choose'] ) {
 		wc_add_notice( get_option( 'vat_invalid' ), 'error' );
 
 	}
@@ -54,17 +54,5 @@ function jds_custom_checkout_field_process() {
 
 }
 
-function custom_enqueue_checkout_script() {
-	if ( is_checkout() ) {
-		wp_enqueue_script( 'jd-checkout-js', plugin_dir_url( __FILE__ ) . 'assets/js/jdcustom.js', null, '43.9' );
 
-	}
-	wp_enqueue_script( 'js-general-js', plugin_dir_url( __FILE__ ) . 'assets/js/global.js', null, '2.1' );
-
-
-	wp_enqueue_style( 'jd-style', plugin_dir_url( __FILE__ ) . 'assets/css/jd-checkout.css', false, '1.1', 'all' );
-
-}
-
-add_action( 'wp_enqueue_scripts', 'custom_enqueue_checkout_script' );
 jdinit::init();

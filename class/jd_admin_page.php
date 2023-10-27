@@ -40,7 +40,7 @@ public function  register_jdtools() { // whitelist options
                     </tr>
 
                     <tr valign="top">
-                        <th scope="row">SPrzycisk więcej</th>
+                        <th scope="row">Przycisk więcej</th>
                         <td><input type="text" name="cookie_more" value="<?php echo esc_attr( get_option('cookie_more') ); ?>" /></td>
                     </tr>
 
