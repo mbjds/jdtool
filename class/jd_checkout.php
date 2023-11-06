@@ -13,6 +13,8 @@ class jd_checkout {
 		add_filter( 'woocommerce_checkout_fields', array( $this, 'jd_remove_checkout_fields' ), 5 );
 		add_filter( 'woocommerce_billing_fields', array( $this, 'jd_reorder_checkout_fields' ) );
 		add_action('woocommerce_checkout_update_order_meta', array($this, 'save_custom_checkout_field'));
+		add_action('woocommerce_admin_order_data_after_billing_address', array($this, 'display_custom_field_on_order'));
+
 
 	}
 
@@ -148,6 +150,26 @@ class jd_checkout {
 		if (!empty($_POST['invoice_city'])) {
 			update_post_meta($order_id, 'invoice_city', sanitize_text_field($_POST['invoice_city']));
 		}
+	}
+	public function display_custom_field_on_order($order) {
+		if(get_post_meta($order->get_id(), 'invoice', true)){
+			echo '<h3>Dane do faktury</h3>';
+			echo '<br>';
+			echo '<div style="color: #777">';
+			echo '<strong>Nip:</strong> ' . get_post_meta($order->get_id(), 'vat_id', true) .'</br>' ;
+			echo '<br>';
+
+			echo '<strong>Nazwa firmy:</strong> ' . '</br>';
+			echo  get_post_meta($order->get_id(), 'company_name', true) .'</br>' ;
+			echo '<br>';
+
+			echo '<strong>Adres:</strong></br> ';
+			echo get_post_meta($order->get_id(), 'invoice_address', true) .'</br>' ;
+			echo  get_post_meta($order->get_id(), 'invoice_zipcode', true) .'</br>';
+			echo get_post_meta($order->get_id(), 'invoice_city', true) ;
+			echo '</div>';
+		}
+
 	}
 
 
