@@ -4,3 +4,6 @@
 .jd-row-wide{
     width: 100% !important;
 }
+.addr-hidden{
+    display: none;
+}
