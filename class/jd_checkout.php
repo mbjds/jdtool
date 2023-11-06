@@ -162,12 +162,14 @@ class jd_checkout {
 			echo '<strong>Nazwa firmy:</strong> ' . '</br>';
 			echo  get_post_meta($order->get_id(), 'company_name', true) .'</br>' ;
 			echo '<br>';
-
-			echo '<strong>Adres:</strong></br> ';
-			echo get_post_meta($order->get_id(), 'invoice_address', true) .'</br>' ;
-			echo  get_post_meta($order->get_id(), 'invoice_zipcode', true) .'</br>';
-			echo get_post_meta($order->get_id(), 'invoice_city', true) ;
+			if(!get_post_meta($order->get_id(), 'custom_address_invoice', true)){
+				echo '<strong>Adres:</strong></br> ';
+				echo get_post_meta($order->get_id(), 'invoice_address', true) .'</br>' ;
+				echo  get_post_meta($order->get_id(), 'invoice_zipcode', true) .'</br>';
+				echo get_post_meta($order->get_id(), 'invoice_city', true) ;
+			}
 			echo '</div>';
+
 		}
 
 	}
