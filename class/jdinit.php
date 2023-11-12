@@ -12,6 +12,8 @@ class jdinit
 	    new jd_admin_page();
 	    new jd_checkout();
 		new jd_assets();
+		new jd_adminViews();
+		new jd_toolset();
 
     }
 	public static function init()

@@ -6,6 +6,12 @@ class jd_assets {
 
 	public function __construct(){
 		add_action( 'wp_enqueue_scripts', array($this, 'custom_enqueue_checkout_script' ));
+		add_action( 'admin_enqueue_scripts', array($this, 'enqueue_admin_custom_css' ));
+
+
+	}
+	public function enqueue_admin_custom_css(){
+		wp_enqueue_style( 'jd-style', plugin_dir_url( __DIR__ ) . 'assets/scss/admin.css' );
 
 	}
 
