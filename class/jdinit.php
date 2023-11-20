@@ -1,7 +1,6 @@
 <?php
-
 namespace JDCustom;
-
+use WP_CLI;
 class jdinit
 {
 	private static $instance;
@@ -13,7 +12,10 @@ class jdinit
 	    new jd_checkout();
 		new jd_assets();
 		new jd_adminViews();
-		new jd_toolset();
+		new jd_cli();
+
+
+
 
     }
 	public static function init()
@@ -28,4 +30,9 @@ class jdinit
 		// Returns the instance
 		return self::$instance;
 	}
+
+	/**
+	 * @throws \Exception
+	 */
+
 }

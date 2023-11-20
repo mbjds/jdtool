@@ -7,7 +7,6 @@ use DateTime;
 class jd_toolset {
 
 	public function __construct(){
-		add_shortcode('jdev', array($this, 'jdevShortcode'));
 
 	}
 
@@ -85,11 +84,10 @@ class jd_toolset {
 		}
 		return count($resp);
 	}
-	public static function jdevShortcode( $attrs ){
+	public static function closeOutdated( ){
 
 		$two_years_ago = new DateTime('-2 years');
 		$two = $two_years_ago->format('d-m-Y');
-		self::nicedump($two);
 		$query = new WC_Order_Query( array(
 		'limit' => -1,
 		'orderby' => 'date',
@@ -104,18 +102,18 @@ class jd_toolset {
 		) );
 		$orders = $query->get_orders();
 
-		jd_toolset::getCount($orders);
-
 		foreach ($orders as $id){
 				$order = wc_get_order($id);
 
-				$order->add_order_note('Mineła ważność kuponu',false);
+				$order->add_order_note('Mineła ważność vouchera',false);
 				$order->set_status('wc-completed');
 				$order->save();
 
 			//	self::nicedump($order);
 
 		}
+
+		return $orders;
 		//		self::nicedump($orders);
 		 
 

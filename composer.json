@@ -11,5 +11,7 @@
             "email": "m.bojarski@jds-group.eu"
         }
     ],
-    "require": {}
+    "require": {
+        "wp-cli/wp-cli-bundle": "*"
+    }
 }
