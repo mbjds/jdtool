@@ -3,7 +3,7 @@
         'name' => 'mb/jdcustom',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-        'reference' => '63544b0496d4f254648b0c4781f4e261064b4083',
+        'reference' => 'fefcefcbb30dae47a033ec8f7c5533e5205f4e3a',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -112,7 +112,7 @@
         'mb/jdcustom' => array(
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
-            'reference' => '63544b0496d4f254648b0c4781f4e261064b4083',
+            'reference' => 'fefcefcbb30dae47a033ec8f7c5533e5205f4e3a',
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
