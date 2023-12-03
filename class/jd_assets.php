@@ -9,9 +9,11 @@ class jd_assets {
 		add_action( 'admin_enqueue_scripts', array($this, 'enqueue_admin_custom_css' ));
 
 
+
 	}
 	public function enqueue_admin_custom_css(){
 		wp_enqueue_style( 'jd-style', plugin_dir_url( __DIR__ ) . 'assets/scss/admin.css' );
+		wp_enqueue_style( 'fa', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css' );
 
 	}
 
@@ -26,5 +28,7 @@ class jd_assets {
 		wp_enqueue_style( 'jd-style', plugin_dir_url( __DIR__ ) . 'assets/css/jd-checkout.css', false, '1.3', 'all' );
 
 	}
+
+
 
 }

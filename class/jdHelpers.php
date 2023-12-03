@@ -20,4 +20,14 @@ class jdHelpers {
 			return ( (int) $digits[9] === $checksum);
 		}
 	}
+
+	public static function table_exists( $table ) {
+		global $wpdb;
+		$table_exists = $wpdb->get_var( "SHOW TABLES LIKE '{$table}'" );
+		if ( \is_wp_error( $table_exists ) || \is_null( $table_exists ) ) {
+			return false;
+		}
+
+		return true;
+	}
 }

@@ -2,11 +2,15 @@
 
 namespace JDCustom;
 use FontLib\Table\Type\head;
+use JDCustom\voucher\aeroVoucher;
+use JDCustom\voucher\dbQuery;
+use JDCustom\voucher\voucherInit;
 use WC_Order_Query;
 use DateTime;
 class jd_toolset {
 
 	public function __construct(){
+		add_shortcode('jds', array($this, 'shor'));
 
 	}
 
@@ -116,6 +120,11 @@ class jd_toolset {
 		return $orders;
 		//		self::nicedump($orders);
 		 
+
+	}
+
+	public static function shor($atts) {
+
 
 	}
 }
