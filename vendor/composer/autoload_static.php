@@ -13,11 +13,11 @@ class ComposerStaticInit8cc78051e7e5b6bc1cbaa012cbe7bfde
         '320cde22f66dd4f5d3fd621d3e88b98f' => __DIR__ . '/..' . '/symfony/polyfill-ctype/bootstrap.php',
         '8825ede83f2f289127722d4e842cf7e8' => __DIR__ . '/..' . '/symfony/polyfill-intl-grapheme/bootstrap.php',
         'e69f7f6ee287b969198c3c9d6777bd38' => __DIR__ . '/..' . '/symfony/polyfill-intl-normalizer/bootstrap.php',
-        '6e3fae29631ef280660b3cdad06f25a8' => __DIR__ . '/..' . '/symfony/deprecation-contracts/function.php',
-        '0d59ee240a4cd96ddbb4ff164fccea4d' => __DIR__ . '/..' . '/symfony/polyfill-php73/bootstrap.php',
-        'a4a119a56e50fbb293281d9a48007e0e' => __DIR__ . '/..' . '/symfony/polyfill-php80/bootstrap.php',
         'b6b991a57620e2fb6b2f66f03fe9ddc2' => __DIR__ . '/..' . '/symfony/string/Resources/functions.php',
         'ad155f8f1cf0d418fe49e248db8c661b' => __DIR__ . '/..' . '/react/promise/src/functions_include.php',
+        '0d59ee240a4cd96ddbb4ff164fccea4d' => __DIR__ . '/..' . '/symfony/polyfill-php73/bootstrap.php',
+        'a4a119a56e50fbb293281d9a48007e0e' => __DIR__ . '/..' . '/symfony/polyfill-php80/bootstrap.php',
+        '23c18046f52bef3eea034657bafda50f' => __DIR__ . '/..' . '/symfony/polyfill-php81/bootstrap.php',
         'ac949ce40a981819ba132473518a9a31' => __DIR__ . '/..' . '/wp-cli/wp-config-transformer/src/WPConfigTransformer.php',
         '8a0ad02df6a5087f2c380f8fd52db273' => __DIR__ . '/..' . '/wp-cli/cache-command/cache-command.php',
         'b66d29757fcb2fb7a9608d068e3716b0' => __DIR__ . '/..' . '/wp-cli/checksum-command/checksum-command.php',
@@ -59,6 +59,7 @@ class ComposerStaticInit8cc78051e7e5b6bc1cbaa012cbe7bfde
         ),
         'S' => 
         array (
+            'Symfony\\Polyfill\\Php81\\' => 23,
             'Symfony\\Polyfill\\Php80\\' => 23,
             'Symfony\\Polyfill\\Php73\\' => 23,
             'Symfony\\Polyfill\\Mbstring\\' => 26,
@@ -71,6 +72,7 @@ class ComposerStaticInit8cc78051e7e5b6bc1cbaa012cbe7bfde
             'Symfony\\Component\\Finder\\' => 25,
             'Symfony\\Component\\Filesystem\\' => 29,
             'Symfony\\Component\\Console\\' => 26,
+            'Seld\\Signal\\' => 12,
             'Seld\\PharUtils\\' => 15,
             'Seld\\JsonLint\\' => 14,
         ),
@@ -105,6 +107,7 @@ class ComposerStaticInit8cc78051e7e5b6bc1cbaa012cbe7bfde
             'Composer\\Semver\\' => 16,
             'Composer\\Pcre\\' => 14,
             'Composer\\MetadataMinifier\\' => 26,
+            'Composer\\ClassMapGenerator\\' => 27,
             'Composer\\CaBundle\\' => 18,
             'Composer\\' => 9,
         ),
@@ -126,6 +129,10 @@ class ComposerStaticInit8cc78051e7e5b6bc1cbaa012cbe7bfde
         'WP_CLI\\Embeds\\' => 
         array (
             0 => __DIR__ . '/..' . '/wp-cli/embed-command/src',
+        ),
+        'Symfony\\Polyfill\\Php81\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/polyfill-php81',
         ),
         'Symfony\\Polyfill\\Php80\\' => 
         array (
@@ -174,6 +181,10 @@ class ComposerStaticInit8cc78051e7e5b6bc1cbaa012cbe7bfde
         'Symfony\\Component\\Console\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/console',
+        ),
+        'Seld\\Signal\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/seld/signal-handler/src',
         ),
         'Seld\\PharUtils\\' => 
         array (
@@ -239,6 +250,10 @@ class ComposerStaticInit8cc78051e7e5b6bc1cbaa012cbe7bfde
         array (
             0 => __DIR__ . '/..' . '/composer/metadata-minifier/src',
         ),
+        'Composer\\ClassMapGenerator\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/composer/class-map-generator/src',
+        ),
         'Composer\\CaBundle\\' => 
         array (
             0 => __DIR__ . '/..' . '/composer/ca-bundle/src',
@@ -282,6 +297,7 @@ class ComposerStaticInit8cc78051e7e5b6bc1cbaa012cbe7bfde
 
     public static $classMap = array (
         'Attribute' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/Attribute.php',
+        'CURLStringFile' => __DIR__ . '/..' . '/symfony/polyfill-php81/Resources/stubs/CURLStringFile.php',
         'Cache_Command' => __DIR__ . '/..' . '/wp-cli/cache-command/src/Cache_Command.php',
         'Capabilities_Command' => __DIR__ . '/..' . '/wp-cli/role-command/src/Capabilities_Command.php',
         'Checksum_Base_Command' => __DIR__ . '/..' . '/wp-cli/checksum-command/src/Checksum_Base_Command.php',
@@ -298,6 +314,7 @@ class ComposerStaticInit8cc78051e7e5b6bc1cbaa012cbe7bfde
         'Cron_Event_Command' => __DIR__ . '/..' . '/wp-cli/cron-command/src/Cron_Event_Command.php',
         'Cron_Schedule_Command' => __DIR__ . '/..' . '/wp-cli/cron-command/src/Cron_Schedule_Command.php',
         'DB_Command' => __DIR__ . '/..' . '/wp-cli/db-command/src/DB_Command.php',
+        'Datamatrix' => __DIR__ . '/..' . '/tecnick.com/tcpdf/include/barcodes/datamatrix.php',
         'EvalFile_Command' => __DIR__ . '/..' . '/wp-cli/eval-command/src/EvalFile_Command.php',
         'Eval_Command' => __DIR__ . '/..' . '/wp-cli/eval-command/src/Eval_Command.php',
         'Export_Command' => __DIR__ . '/..' . '/wp-cli/export-command/src/Export_Command.php',
@@ -312,6 +329,7 @@ class ComposerStaticInit8cc78051e7e5b6bc1cbaa012cbe7bfde
         'Network_Namespace' => __DIR__ . '/..' . '/wp-cli/entity-command/src/Network_Namespace.php',
         'Normalizer' => __DIR__ . '/..' . '/symfony/polyfill-intl-normalizer/Resources/stubs/Normalizer.php',
         'Option_Command' => __DIR__ . '/..' . '/wp-cli/entity-command/src/Option_Command.php',
+        'PDF417' => __DIR__ . '/..' . '/tecnick.com/tcpdf/include/barcodes/pdf417.php',
         'Package_Command' => __DIR__ . '/..' . '/wp-cli/package-command/src/Package_Command.php',
         'PhpToken' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/PhpToken.php',
         'Plugin_AutoUpdates_Command' => __DIR__ . '/..' . '/wp-cli/extension-command/src/Plugin_AutoUpdates_Command.php',
@@ -322,6 +340,8 @@ class ComposerStaticInit8cc78051e7e5b6bc1cbaa012cbe7bfde
         'Post_Meta_Command' => __DIR__ . '/..' . '/wp-cli/entity-command/src/Post_Meta_Command.php',
         'Post_Term_Command' => __DIR__ . '/..' . '/wp-cli/entity-command/src/Post_Term_Command.php',
         'Post_Type_Command' => __DIR__ . '/..' . '/wp-cli/entity-command/src/Post_Type_Command.php',
+        'QRcode' => __DIR__ . '/..' . '/tecnick.com/tcpdf/include/barcodes/qrcode.php',
+        'ReturnTypeWillChange' => __DIR__ . '/..' . '/symfony/polyfill-php81/Resources/stubs/ReturnTypeWillChange.php',
         'Rewrite_Command' => __DIR__ . '/..' . '/wp-cli/rewrite-command/src/Rewrite_Command.php',
         'Role_Command' => __DIR__ . '/..' . '/wp-cli/role-command/src/Role_Command.php',
         'Scaffold_Command' => __DIR__ . '/..' . '/wp-cli/scaffold-command/src/Scaffold_Command.php',
@@ -335,6 +355,17 @@ class ComposerStaticInit8cc78051e7e5b6bc1cbaa012cbe7bfde
         'Site_Switch_Language_Command' => __DIR__ . '/..' . '/wp-cli/language-command/src/Site_Switch_Language_Command.php',
         'Stringable' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/Stringable.php',
         'Super_Admin_Command' => __DIR__ . '/..' . '/wp-cli/super-admin-command/src/Super_Admin_Command.php',
+        'TCPDF' => __DIR__ . '/..' . '/tecnick.com/tcpdf/tcpdf.php',
+        'TCPDF2DBarcode' => __DIR__ . '/..' . '/tecnick.com/tcpdf/tcpdf_barcodes_2d.php',
+        'TCPDFBarcode' => __DIR__ . '/..' . '/tecnick.com/tcpdf/tcpdf_barcodes_1d.php',
+        'TCPDF_COLORS' => __DIR__ . '/..' . '/tecnick.com/tcpdf/include/tcpdf_colors.php',
+        'TCPDF_FILTERS' => __DIR__ . '/..' . '/tecnick.com/tcpdf/include/tcpdf_filters.php',
+        'TCPDF_FONTS' => __DIR__ . '/..' . '/tecnick.com/tcpdf/include/tcpdf_fonts.php',
+        'TCPDF_FONT_DATA' => __DIR__ . '/..' . '/tecnick.com/tcpdf/include/tcpdf_font_data.php',
+        'TCPDF_IMAGES' => __DIR__ . '/..' . '/tecnick.com/tcpdf/include/tcpdf_images.php',
+        'TCPDF_IMPORT' => __DIR__ . '/..' . '/tecnick.com/tcpdf/tcpdf_import.php',
+        'TCPDF_PARSER' => __DIR__ . '/..' . '/tecnick.com/tcpdf/tcpdf_parser.php',
+        'TCPDF_STATIC' => __DIR__ . '/..' . '/tecnick.com/tcpdf/include/tcpdf_static.php',
         'Taxonomy_Command' => __DIR__ . '/..' . '/wp-cli/entity-command/src/Taxonomy_Command.php',
         'Term_Command' => __DIR__ . '/..' . '/wp-cli/entity-command/src/Term_Command.php',
         'Term_Meta_Command' => __DIR__ . '/..' . '/wp-cli/entity-command/src/Term_Meta_Command.php',
@@ -360,14 +391,15 @@ class ComposerStaticInit8cc78051e7e5b6bc1cbaa012cbe7bfde
         'WP_CLI\\Core\\NonDestructiveCoreUpgrader' => __DIR__ . '/..' . '/wp-cli/core-command/src/WP_CLI/Core/NonDestructiveCoreUpgrader.php',
         'WP_CLI\\DestructivePluginUpgrader' => __DIR__ . '/..' . '/wp-cli/extension-command/src/WP_CLI/DestructivePluginUpgrader.php',
         'WP_CLI\\DestructiveThemeUpgrader' => __DIR__ . '/..' . '/wp-cli/extension-command/src/WP_CLI/DestructiveThemeUpgrader.php',
-        'WP_CLI\\Entity\\NonExistentKeyException' => __DIR__ . '/..' . '/wp-cli/entity-command/src/WP_CLI/Entity/NonExistentKeyException.php',
-        'WP_CLI\\Entity\\RecursiveDataStructureTraverser' => __DIR__ . '/..' . '/wp-cli/entity-command/src/WP_CLI/Entity/RecursiveDataStructureTraverser.php',
-        'WP_CLI\\Entity\\Utils' => __DIR__ . '/..' . '/wp-cli/entity-command/src/WP_CLI/Entity/Utils.php',
         'WP_CLI\\Fetchers\\Plugin' => __DIR__ . '/..' . '/wp-cli/extension-command/src/WP_CLI/Fetchers/Plugin.php',
         'WP_CLI\\Fetchers\\Theme' => __DIR__ . '/..' . '/wp-cli/extension-command/src/WP_CLI/Fetchers/Theme.php',
         'WP_CLI\\Fetchers\\UnfilteredPlugin' => __DIR__ . '/..' . '/wp-cli/checksum-command/src/WP_CLI/Fetchers/UnfilteredPlugin.php',
         'WP_CLI\\JsonManipulator' => __DIR__ . '/..' . '/wp-cli/package-command/src/WP_CLI/JsonManipulator.php',
         'WP_CLI\\LanguagePackUpgrader' => __DIR__ . '/..' . '/wp-cli/language-command/src/WP_CLI/LanguagePackUpgrader.php',
+        'WP_CLI\\Package\\Compat\\Min_Composer_1_10\\NullIOMethodsTrait' => __DIR__ . '/..' . '/wp-cli/package-command/src/WP_CLI/Package/Compat/Min_Composer_1_10/NullIOMethodsTrait.php',
+        'WP_CLI\\Package\\Compat\\Min_Composer_2_3\\NullIOMethodsTrait' => __DIR__ . '/..' . '/wp-cli/package-command/src/WP_CLI/Package/Compat/Min_Composer_2_3/NullIOMethodsTrait.php',
+        'WP_CLI\\Package\\Compat\\NullIOMethodsTrait' => __DIR__ . '/..' . '/wp-cli/package-command/src/WP_CLI/Package/Compat/NullIOMethodsTrait.php',
+        'WP_CLI\\Package\\ComposerIO' => __DIR__ . '/..' . '/wp-cli/package-command/src/WP_CLI/Package/ComposerIO.php',
         'WP_CLI\\ParsePluginNameInput' => __DIR__ . '/..' . '/wp-cli/extension-command/src/WP_CLI/ParsePluginNameInput.php',
         'WP_CLI\\ParseThemeNameInput' => __DIR__ . '/..' . '/wp-cli/extension-command/src/WP_CLI/ParseThemeNameInput.php',
         'WP_CLI\\SearchReplacer' => __DIR__ . '/..' . '/wp-cli/search-replace-command/src/WP_CLI/SearchReplacer.php',

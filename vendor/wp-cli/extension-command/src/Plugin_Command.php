@@ -2,6 +2,7 @@
 
 use WP_CLI\ParsePluginNameInput;
 use WP_CLI\Utils;
+use WP_CLI\WpOrgApi;
 
 /**
  * Manages plugins, including installs, activations, and updates.
@@ -46,12 +47,18 @@ class Plugin_Command extends \WP_CLI\CommandWithUpgrade {
 	protected $item_type         = 'plugin';
 	protected $upgrade_refresh   = 'wp_update_plugins';
 	protected $upgrade_transient = 'update_plugins';
+	protected $check_wporg       = [
+		'status'       => false,
+		'last_updated' => false,
+	];
 
 	protected $obj_fields = array(
 		'name',
 		'status',
 		'update',
 		'version',
+		'update_version',
+		'auto_update',
 	);
 
 	/**
@@ -243,19 +250,23 @@ class Plugin_Command extends \WP_CLI\CommandWithUpgrade {
 			if ( ! empty( $mu_plugin['Description'] ) ) {
 				$mu_description = $mu_plugin['Description'];
 			}
+			$mu_name    = Utils\get_plugin_name( $file );
+			$wporg_info = $this->get_wporg_data( $mu_name );
 
 			$items[ $file ] = array(
-				'name'           => Utils\get_plugin_name( $file ),
-				'status'         => 'must-use',
-				'update'         => false,
-				'update_version' => null,
-				'update_package' => null,
-				'version'        => $mu_version,
-				'update_id'      => '',
-				'title'          => $mu_title,
-				'description'    => $mu_description,
-				'file'           => $file,
-				'auto_update'    => false,
+				'name'               => $mu_name,
+				'status'             => 'must-use',
+				'update'             => false,
+				'update_version'     => null,
+				'update_package'     => null,
+				'version'            => $mu_version,
+				'update_id'          => '',
+				'title'              => $mu_title,
+				'description'        => $mu_description,
+				'file'               => $file,
+				'auto_update'        => false,
+				'wporg_status'       => $wporg_info['status'],
+				'wporg_last_updated' => $wporg_info['last_updated'],
 			);
 		}
 
@@ -264,17 +275,19 @@ class Plugin_Command extends \WP_CLI\CommandWithUpgrade {
 		foreach ( $raw_items as $name => $item_data ) {
 			$description    = ! empty( $raw_data[ $name ][0] ) ? $raw_data[ $name ][0] : '';
 			$items[ $name ] = [
-				'name'           => $name,
-				'title'          => $item_data['Title'],
-				'description'    => $description,
-				'status'         => 'dropin',
-				'update'         => false,
-				'update_version' => null,
-				'update_package' => null,
-				'update_id'      => '',
-				'file'           => $name,
-				'auto_update'    => false,
-				'author'         => $item_data['Author'],
+				'name'               => $name,
+				'title'              => $item_data['Title'],
+				'description'        => $description,
+				'status'             => 'dropin',
+				'update'             => false,
+				'update_version'     => null,
+				'update_package'     => null,
+				'update_id'          => '',
+				'file'               => $name,
+				'auto_update'        => false,
+				'author'             => $item_data['Author'],
+				'wporg_status'       => '',
+				'wporg_last_updated' => '',
 			];
 		}
 
@@ -355,6 +368,7 @@ class Plugin_Command extends \WP_CLI\CommandWithUpgrade {
 				$message = wp_strip_all_tags( $message );
 				$message = str_replace( 'Error: ', '', $message );
 				WP_CLI::warning( "Failed to activate plugin. {$message}" );
+				++$errors;
 			} else {
 				$this->active_output( $plugin->name, $plugin->file, $network_wide, 'activate' );
 				++$successes;
@@ -701,6 +715,7 @@ class Plugin_Command extends \WP_CLI\CommandWithUpgrade {
 			$all_update_info = $this->get_update_info();
 			$update_info     = ( isset( $all_update_info->response[ $file ] ) && null !== $all_update_info->response[ $file ] ) ? (array) $all_update_info->response[ $file ] : null;
 			$name            = Utils\get_plugin_name( $file );
+			$wporg_info      = $this->get_wporg_data( $name );
 
 			if ( ! isset( $duplicate_names[ $name ] ) ) {
 				$duplicate_names[ $name ] = array();
@@ -708,22 +723,23 @@ class Plugin_Command extends \WP_CLI\CommandWithUpgrade {
 
 			$duplicate_names[ $name ][] = $file;
 			$items[ $file ]             = [
-				'name'           => $name,
-				'status'         => $this->get_status( $file ),
-				'update'         => (bool) $update_info,
-				'update_version' => isset( $update_info ) && isset( $update_info['new_version'] ) ? $update_info['new_version'] : null,
-				'update_package' => isset( $update_info ) && isset( $update_info['package'] ) ? $update_info['package'] : null,
-				'version'        => $details['Version'],
-				'update_id'      => $file,
-				'title'          => $details['Name'],
-				'description'    => wordwrap( $details['Description'] ),
-				'file'           => $file,
-				'auto_update'    => in_array( $file, $auto_updates, true ),
-				'author'         => $details['Author'],
+				'name'               => $name,
+				'status'             => $this->get_status( $file ),
+				'update'             => (bool) $update_info,
+				'update_version'     => isset( $update_info ) && isset( $update_info['new_version'] ) ? $update_info['new_version'] : null,
+				'update_package'     => isset( $update_info ) && isset( $update_info['package'] ) ? $update_info['package'] : null,
+				'version'            => $details['Version'],
+				'update_id'          => $file,
+				'title'              => $details['Name'],
+				'description'        => wordwrap( $details['Description'] ),
+				'file'               => $file,
+				'auto_update'        => in_array( $file, $auto_updates, true ),
+				'author'             => $details['Author'],
+				'wporg_status'       => $wporg_info['status'],
+				'wporg_last_updated' => $wporg_info['last_updated'],
 			];
 
 			if ( null === $update_info ) {
-
 				// Get info for all plugins that don't have an update.
 				$plugin_update_info = isset( $all_update_info->no_update[ $file ] ) ? $all_update_info->no_update[ $file ] : null;
 
@@ -744,6 +760,64 @@ class Plugin_Command extends \WP_CLI\CommandWithUpgrade {
 		}
 
 		return $items;
+	}
+
+	/**
+	 * Get the wordpress.org status of a plugin.
+	 *
+	 * @param string $plugin_name The plugin slug.
+	 *
+	 * @return string The status of the plugin, includes the last update date.
+	 */
+	protected function get_wporg_data( $plugin_name ) {
+		$data = [
+			'status'       => '',
+			'last_updated' => '',
+		];
+		if ( ! $this->check_wporg['status'] && ! $this->check_wporg['last_updated'] ) {
+			return $data;
+		}
+
+		if ( $this->check_wporg ) {
+			try {
+				$plugin_data = ( new WpOrgApi() )->get_plugin_info( $plugin_name );
+			} catch ( Exception $e ) {
+				// Request failed. The plugin is not (active) on .org.
+				$plugin_data = false;
+			}
+			if ( $plugin_data ) {
+				$data['status'] = 'active';
+				if ( ! $this->check_wporg['last_updated'] ) {
+					return $data; // The plugin is active on .org, but we don't need the date.
+				}
+			}
+			// Just because the plugin is not in the api, does not mean it was never on .org.
+		}
+
+		$request       = wp_remote_get( "https://plugins.trac.wordpress.org/log/{$plugin_name}/?limit=1&mode=stop_on_copy&format=rss" );
+		$response_code = wp_remote_retrieve_response_code( $request );
+		if ( 404 === $response_code ) {
+			return $data; // This plugin was never on .org, there is no date to check.
+		}
+		if ( 'active' !== $data['status'] ) {
+			$data['status'] = 'closed'; // This plugin was on .org at some point, but not anymore.
+		}
+		if ( ! class_exists( 'SimpleXMLElement' ) ) {
+			WP_CLI::error( "The PHP extension 'SimpleXMLElement' is not available but is required for XML-formatted output." );
+		}
+
+		// Check the last update date.
+		$r_body = wp_remote_retrieve_body( $request );
+		if ( str_contains( $r_body, 'pubDate' ) ) {
+			// Very raw check, not validating the format or anything else.
+			$xml          = simplexml_load_string( $r_body );
+			$xml_pub_date = $xml->xpath( '//pubDate' );
+			if ( $xml_pub_date ) {
+				$data['last_updated'] = wp_date( 'Y-m-d', (string) strtotime( $xml_pub_date[0] ) );
+			}
+		}
+
+		return $data;
 	}
 
 	protected function filter_item_list( $items, $args ) {
@@ -1175,10 +1249,10 @@ class Plugin_Command extends \WP_CLI\CommandWithUpgrade {
 	 * * status
 	 * * update
 	 * * version
+	 * * update_version
 	 *
 	 * These fields are optionally available:
 	 *
-	 * * update_version
 	 * * update_package
 	 * * update_id
 	 * * title
@@ -1186,31 +1260,58 @@ class Plugin_Command extends \WP_CLI\CommandWithUpgrade {
 	 * * file
 	 * * auto_update
 	 * * author
+	 * * wporg_status
+	 * * wporg_last_updated
 	 *
 	 * ## EXAMPLES
 	 *
 	 *     # List active plugins on the site.
 	 *     $ wp plugin list --status=active --format=json
-	 *     [{"name":"dynamic-hostname","status":"active","update":"none","version":"0.4.2"},{"name":"tinymce-templates","status":"active","update":"none","version":"4.4.3"},{"name":"wp-multibyte-patch","status":"active","update":"none","version":"2.4"},{"name":"wp-total-hacks","status":"active","update":"none","version":"2.0.1"}]
+	 *     [{"name":"dynamic-hostname","status":"active","update":"none","version":"0.4.2","update_version": ""},{"name":"tinymce-templates","status":"active","update":"none","version":"4.4.3","update_version": ""},{"name":"wp-multibyte-patch","status":"active","update":"none","version":"2.4","update_version": ""},{"name":"wp-total-hacks","status":"active","update":"none","version":"2.0.1","update_version": ""}]
 	 *
 	 *     # List plugins on each site in a network.
 	 *     $ wp site list --field=url | xargs -I % wp plugin list --url=%
-	 *     +---------+----------------+--------+---------+
-	 *     | name    | status         | update | version |
-	 *     +---------+----------------+--------+---------+
-	 *     | akismet | active-network | none   | 3.1.11  |
-	 *     | hello   | inactive       | none   | 1.6     |
-	 *     +---------+----------------+--------+---------+
-	 *     +---------+----------------+--------+---------+
-	 *     | name    | status         | update | version |
-	 *     +---------+----------------+--------+---------+
-	 *     | akismet | active-network | none   | 3.1.11  |
-	 *     | hello   | inactive       | none   | 1.6     |
-	 *     +---------+----------------+--------+---------+
+	 *     +---------+----------------+--------+---------+----------------+
+	 *     | name    | status         | update | version | update_version |
+	 *     +---------+----------------+--------+---------+----------------+
+	 *     | akismet | active-network | none   | 3.1.11  |                |
+	 *     | hello   | inactive       | none   | 1.6     | 1.7.2          |
+	 *     +---------+----------------+--------+---------+----------------+
+	 *     +---------+----------------+--------+---------+----------------+
+	 *     | name    | status         | update | version | update_version |
+	 *     +---------+----------------+--------+---------+----------------+
+	 *     | akismet | active-network | none   | 3.1.11  |                |
+	 *     | hello   | inactive       | none   | 1.6     | 1.7.2          |
+	 *     +---------+----------------+--------+---------+----------------+
+	 *
+	 *     # Check whether plugins are still active on WordPress.org
+	 *     $ wp plugin list --format=csv --fields=name,wporg_status,wporg_last_updated
+	 *     +--------------------+--------------+--------------------+
+	 *     | name               | wporg_status | wporg_last_updated |
+	 *     +--------------------+--------------+--------------------+
+	 *     | akismet            | active       | 2023-12-11         |
+	 *     | user-switching     | active       | 2023-11-17         |
+	 *     | wordpress-importer | active       | 2023-04-28         |
+	 *     | local              |              |                    |
+	 *     +--------------------+--------------+--------------------+
 	 *
 	 * @subcommand list
 	 */
 	public function list_( $_, $assoc_args ) {
+		$fields = Utils\get_flag_value( $assoc_args, 'fields' );
+		if ( ! empty( $fields ) ) {
+			$fields                            = explode( ',', $fields );
+			$this->check_wporg['status']       = in_array( 'wporg_status', $fields, true );
+			$this->check_wporg['last_updated'] = in_array( 'wporg_last_updated', $fields, true );
+		}
+
+		$field = Utils\get_flag_value( $assoc_args, 'field' );
+		if ( 'wporg_status' === $field ) {
+			$this->check_wporg['status'] = true;
+		} elseif ( 'wporg_last_updated' === $field ) {
+			$this->check_wporg['last_updated'] = true;
+		}
+
 		parent::_list( $_, $assoc_args );
 	}
 

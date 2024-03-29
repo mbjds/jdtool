@@ -125,8 +125,10 @@ Feature: Manage translation files for a WordPress install
     When I run `wp language plugin uninstall hello-dolly cs_CZ de_DE`
     Then the wp-content/languages/plugins/hello-dolly-cs_CZ.po file should not exist
     And the wp-content/languages/plugins/hello-dolly-cs_CZ.mo file should not exist
+    And the wp-content/languages/plugins/hello-dolly-cs_CZ.l10n.php file should not exist
     And the wp-content/languages/plugins/hello-dolly-de_DE.po file should not exist
     And the wp-content/languages/plugins/hello-dolly-de_DE.mo file should not exist
+    And the wp-content/languages/plugins/hello-dolly-de_DE.l10n.php file should not exist
     And STDOUT should contain:
       """
       Language 'cs_CZ' for 'hello-dolly' uninstalled.
@@ -220,8 +222,7 @@ Feature: Manage translation files for a WordPress install
     And STDOUT should be empty
     And the return code should be 0
 
-  # An empty plugin directory breaks SQLite integration, which uses a plugin.
-  @require-wp-4.0 @require-mysql
+  @require-wp-4.0
   Scenario: Not providing plugin slugs should throw an error unless --all given
     Given a WP install
     And I run `wp plugin path`
@@ -386,8 +387,7 @@ Feature: Manage translation files for a WordPress install
     And STDERR should be empty
 
 
-  # An empty plugin directory breaks SQLite integration, which uses a plugin.
-  @require-wp-4.0 @require-mysql
+  @require-wp-4.0
   Scenario: Install translations for all installed plugins
     Given a WP install
     And I run `wp plugin path`

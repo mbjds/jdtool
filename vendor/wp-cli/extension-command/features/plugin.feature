@@ -63,8 +63,8 @@ Feature: Manage WordPress plugins
 
     When I run `wp plugin list`
     Then STDOUT should be a table containing rows:
-      | name       | status | update | version |
-      | Zombieland | active | none   | 0.1.0   |
+      | name       | status | update | version | update_version | auto_update |
+      | Zombieland | active | none   | 0.1.0   |                | off         |
 
     When I try `wp plugin uninstall Zombieland`
     Then STDERR should be:
@@ -131,8 +131,8 @@ Feature: Manage WordPress plugins
 
     When I run `wp plugin list`
     Then STDOUT should be a table containing rows:
-      | name               | status   | update    | version |
-      | wordpress-importer | active   | available | 0.5     |
+      | name               | status   | update    | version | update_version   | auto_update |
+      | wordpress-importer | active   | available | 0.5     | {UPDATE_VERSION} | off         |
 
     When I try `wp plugin update`
     Then STDERR should be:
@@ -397,11 +397,13 @@ Feature: Manage WordPress plugins
       Installing Debug Bar List Script & Style Dependencies
       """
 
+  # Not running for SQLite because it involves another must-use plugin and a drop-in.
+  @require-mysql
   Scenario: Enable and disable all plugins
     Given a WP install
 
     When I run `wp plugin activate --all`
-    Then STDOUT should be:
+    Then STDOUT should contain:
       """
       Plugin 'akismet' activated.
       Plugin 'hello' activated.
@@ -577,20 +579,19 @@ Feature: Manage WordPress plugins
     And these installed and active plugins:
       """
       akismet
-      jetpack
-      user-switching
+      site-secrets
       """
     And a wp-content/mu-plugins/hide-us-plugin.php file:
       """
       <?php
       /**
-       * Plugin Name: Hide User Switchign on Production
-       * Description: Hides the User Switching plugin on production sites
+       * Plugin Name: Hide Site Secrets on Production
+       * Description: Hides the Site Secrets plugin on production sites
        * Author: WP-CLI tests
        */
 
        add_filter( 'all_plugins', function( $all_plugins ) {
-          unset( $all_plugins['user-switching/user-switching.php'] );
+          unset( $all_plugins['site-secrets/site-secrets.php'] );
           return $all_plugins;
        } );
        """
@@ -598,7 +599,7 @@ Feature: Manage WordPress plugins
     When I run `wp plugin list --fields=name`
     Then STDOUT should not contain:
       """
-      user-switching
+      site-secrets
       """
 
   Scenario: Show dropins plugin list
@@ -648,11 +649,14 @@ Feature: Manage WordPress plugins
 
     When I run `wp plugin list --name=hello-dolly  --field=version`
     And save STDOUT as {PLUGIN_VERSION}
+    
+    When I run `wp plugin list --name=hello-dolly  --field=update_version`
+    And save STDOUT as {UPDATE_VERSION}
 
     When I run `wp plugin list`
     Then STDOUT should be a table containing rows:
-      | name               | status   | update                       | version          |
-      | hello-dolly        | inactive | version higher than expected | {PLUGIN_VERSION} |
+      | name               | status   | update                       | version          | update_version   | auto_update |
+      | hello-dolly        | inactive | version higher than expected | {PLUGIN_VERSION} | {UPDATE_VERSION} | off         |
 
     When I try `wp plugin update --all`
     Then STDERR should be:

@@ -375,10 +375,10 @@ These fields will be displayed by default for each plugin:
 * status
 * update
 * version
+* update_version
 
 These fields are optionally available:
 
-* update_version
 * update_package
 * update_id
 * title
@@ -386,27 +386,40 @@ These fields are optionally available:
 * file
 * auto_update
 * author
+* wporg_status
+* wporg_last_updated
 
 **EXAMPLES**
 
     # List active plugins on the site.
     $ wp plugin list --status=active --format=json
-    [{"name":"dynamic-hostname","status":"active","update":"none","version":"0.4.2"},{"name":"tinymce-templates","status":"active","update":"none","version":"4.4.3"},{"name":"wp-multibyte-patch","status":"active","update":"none","version":"2.4"},{"name":"wp-total-hacks","status":"active","update":"none","version":"2.0.1"}]
+    [{"name":"dynamic-hostname","status":"active","update":"none","version":"0.4.2","update_version": ""},{"name":"tinymce-templates","status":"active","update":"none","version":"4.4.3","update_version": ""},{"name":"wp-multibyte-patch","status":"active","update":"none","version":"2.4","update_version": ""},{"name":"wp-total-hacks","status":"active","update":"none","version":"2.0.1","update_version": ""}]
 
     # List plugins on each site in a network.
     $ wp site list --field=url | xargs -I % wp plugin list --url=%
-    +---------+----------------+--------+---------+
-    | name    | status         | update | version |
-    +---------+----------------+--------+---------+
-    | akismet | active-network | none   | 3.1.11  |
-    | hello   | inactive       | none   | 1.6     |
-    +---------+----------------+--------+---------+
-    +---------+----------------+--------+---------+
-    | name    | status         | update | version |
-    +---------+----------------+--------+---------+
-    | akismet | active-network | none   | 3.1.11  |
-    | hello   | inactive       | none   | 1.6     |
-    +---------+----------------+--------+---------+
+    +---------+----------------+--------+---------+----------------+
+    | name    | status         | update | version | update_version |
+    +---------+----------------+--------+---------+----------------+
+    | akismet | active-network | none   | 3.1.11  |                |
+    | hello   | inactive       | none   | 1.6     | 1.7.2          |
+    +---------+----------------+--------+---------+----------------+
+    +---------+----------------+--------+---------+----------------+
+    | name    | status         | update | version | update_version |
+    +---------+----------------+--------+---------+----------------+
+    | akismet | active-network | none   | 3.1.11  |                |
+    | hello   | inactive       | none   | 1.6     | 1.7.2          |
+    +---------+----------------+--------+---------+----------------+
+
+    # Check whether plugins are still active on WordPress.org
+    $ wp plugin list --format=csv --fields=name,wporg_status,wporg_last_updated
+    +--------------------+--------------+--------------------+
+    | name               | wporg_status | wporg_last_updated |
+    +--------------------+--------------+--------------------+
+    | akismet            | active       | 2023-12-11         |
+    | user-switching     | active       | 2023-11-17         |
+    | wordpress-importer | active       | 2023-04-28         |
+    | local              |              |                    |
+    +--------------------+--------------+--------------------+
 
 
 
@@ -1058,10 +1071,10 @@ These fields will be displayed by default for each theme:
 * status
 * update
 * version
+* update_version
 
 These fields are optionally available:
 
-* update_version
 * update_package
 * update_id
 * title
@@ -1072,9 +1085,9 @@ These fields are optionally available:
 
     # List themes
     $ wp theme list --status=inactive --format=csv
-    name,status,update,version
-    twentyfourteen,inactive,none,1.7
-    twentysixteen,inactive,available,1.1
+    name,status,update,version,update_version
+    twentyfourteen,inactive,none,1.7,
+    twentysixteen,inactive,available,1.1,
 
 
 
@@ -1351,7 +1364,7 @@ wp theme status [<theme>]
 Updates one or more themes.
 
 ~~~
-wp theme update [<theme>...] [--all] [--exclude=<theme-names>] [--format=<format>] [--version=<version>] [--dry-run] [--insecure]
+wp theme update [<theme>...] [--all] [--exclude=<theme-names>] [--minor] [--patch] [--format=<format>] [--version=<version>] [--dry-run] [--insecure]
 ~~~
 
 **OPTIONS**
@@ -1364,6 +1377,12 @@ wp theme update [<theme>...] [--all] [--exclude=<theme-names>] [--format=<format
 
 	[--exclude=<theme-names>]
 		Comma separated list of theme names that should be excluded from updating.
+
+	[--minor]
+		Only perform updates for minor releases (e.g. from 1.3 to 1.4 instead of 2.0)
+
+	[--patch]
+		Only perform updates for patch releases (e.g. from 1.3 to 1.3.3 instead of 1.4)
 
 	[--format=<format>]
 		Render output in a particular format.

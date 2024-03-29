@@ -49,7 +49,14 @@ class Theme_Command extends CommandWithUpgrade {
 	protected $upgrade_refresh   = 'wp_update_themes';
 	protected $upgrade_transient = 'update_themes';
 
-	protected $obj_fields = [ 'name', 'status', 'update', 'version' ];
+	protected $obj_fields = [
+		'name',
+		'status',
+		'update',
+		'version',
+		'update_version',
+		'auto_update',
+	];
 
 	public function __construct() {
 		if ( is_multisite() ) {
@@ -432,7 +439,7 @@ class Theme_Command extends CommandWithUpgrade {
 	protected function filter_item_list( $items, $args ) {
 		$theme_files = array();
 		foreach ( $args as $arg ) {
-			$theme_files[] = $this->fetcher->get_check( $arg )->get_stylesheet_directory();
+			$theme_files[] = $this->fetcher->get_check( $arg )->get_stylesheet();
 		}
 
 		return Utils\pick_fields( $items, $theme_files );
@@ -581,6 +588,12 @@ class Theme_Command extends CommandWithUpgrade {
 	 *
 	 * [--exclude=<theme-names>]
 	 * : Comma separated list of theme names that should be excluded from updating.
+	 *
+	 * [--minor]
+	 * : Only perform updates for minor releases (e.g. from 1.3 to 1.4 instead of 2.0)
+	 *
+	 * [--patch]
+	 * : Only perform updates for patch releases (e.g. from 1.3 to 1.3.3 instead of 1.4)
 	 *
 	 * [--format=<format>]
 	 * : Render output in a particular format.
@@ -846,10 +859,10 @@ class Theme_Command extends CommandWithUpgrade {
 	 * * status
 	 * * update
 	 * * version
+	 * * update_version
 	 *
 	 * These fields are optionally available:
 	 *
-	 * * update_version
 	 * * update_package
 	 * * update_id
 	 * * title
@@ -860,9 +873,9 @@ class Theme_Command extends CommandWithUpgrade {
 	 *
 	 *     # List themes
 	 *     $ wp theme list --status=inactive --format=csv
-	 *     name,status,update,version
-	 *     twentyfourteen,inactive,none,1.7
-	 *     twentysixteen,inactive,available,1.1
+	 *     name,status,update,version,update_version
+	 *     twentyfourteen,inactive,none,1.7,
+	 *     twentysixteen,inactive,available,1.1,
 	 *
 	 * @subcommand list
 	 */

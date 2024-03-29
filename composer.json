@@ -12,6 +12,7 @@
         }
     ],
     "require": {
-        "wp-cli/wp-cli-bundle": "*"
+        "wp-cli/wp-cli-bundle": "*",
+        "tecnick.com/tcpdf": "@dev"
     }
 }

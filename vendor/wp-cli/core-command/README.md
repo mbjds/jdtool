@@ -42,7 +42,7 @@ wp core
 Checks for WordPress updates via Version Check API.
 
 ~~~
-wp core check-update [--minor] [--major] [--field=<field>] [--fields=<fields>] [--format=<format>]
+wp core check-update [--minor] [--major] [--force-check] [--field=<field>] [--fields=<fields>] [--format=<format>]
 ~~~
 
 Lists the most recent versions when there are updates available,
@@ -55,6 +55,9 @@ or success message when up to date.
 
 	[--major]
 		Compare only the first part of the version number.
+
+	[--force-check]
+		Bypass the transient cache and force a fresh update check.
 
 	[--field=<field>]
 		Prints the value of a single field for each update.
@@ -95,7 +98,7 @@ wp core download [<download-url>] [--path=<path>] [--locale=<locale>] [--version
 
 Downloads and extracts WordPress core files to the specified path. Uses
 current directory when no path is specified. Downloaded build is verified
-to have the correct md5 and then cached to the local filesytem.
+to have the correct md5 and then cached to the local filesystem.
 Subsequent uses of command will use the local cache if it still exists.
 
 **OPTIONS**
