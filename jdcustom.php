@@ -4,7 +4,7 @@
  * Plugin URI:        https://jds-group.eu
  * Description:       Implementacja customowych zamian
  * Version:           1.0.1
- * Requires PHP:      8.0
+ * Requires PHP:      8.1
  * Author:            Marcin Bojarski
  * Author URI:        https://jds-group.eu
  * License:           GPL v2 or later
