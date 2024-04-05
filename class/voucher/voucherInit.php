@@ -22,7 +22,7 @@ class voucherInit
             $defaults['status'] = 'Status';
             $defaults['created'] = 'Utworzono';
             $defaults['reservationDate'] = 'Data rezerwacji';
-            $defaults['closeed'] = 'Zakończono';
+            $defaults['closed'] = 'Zakończono';
             $defaults['actions'] = ' ';
 
             return $defaults;
@@ -35,7 +35,7 @@ class voucherInit
             $columns['status'] = 'Status';
             $columns['created'] = 'Utworzono';
             $columns['reservationDate'] = 'Data rezerwacji';
-            $columns['closeed'] = 'Zakończono';
+            $columns['closed'] = 'Zakończono';
 
             return $columns;
         });
@@ -67,7 +67,7 @@ class voucherInit
 
             if ('reservationDate' == $column_name) {
                 // Display an ACF field
-                $inst->renderDate($inst->getMeta('reservationDate'));
+                $inst->renderDate($inst->getMeta('reservation'));
             }
             if ('closed' == $column_name) {
                 // Display an ACF field
@@ -75,8 +75,30 @@ class voucherInit
             }
 
             if ('actions' == $column_name) {
-                // Display an ACF field
-                echo '<i  data-id="'.$post_id.'" style="color: black; font-size: 22px;" class="renderPDF fa-regular fa-file-pdf"></i>';
+                $ii = 2;
+                for ($i = 0; $i < $ii; ++$i) {
+                    switch ($i) {
+                        case 0:
+                            if (0 == $inst->getMeta('vStatus')) {
+                                $render = 'rTrue';
+                            } else {
+                                $render = 'rFalse';
+                            }
+                            echo '<i  data-id="'.$post_id.'" style="font-size: 22px; padding: 0 7px" class="'.$render.' activateF  fa-regular fa-check-circle"></i>';
+
+                            break;
+
+                        case 1:
+                            if (0 == $inst->getMeta('vStatus')) {
+                                $render = 'rFalse';
+                            } else {
+                                $render = 'rTrue';
+                            }
+                            echo '<i data-id="'.$post_id.'" style="font-size: 22px; padding: 0 7px" class="'.$render.' renderPDF fa-regular fa-file-pdf"></i>';
+
+                            break;
+                    }
+                }
             }
         }, 10, 2);
     }

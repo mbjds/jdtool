@@ -95,7 +95,6 @@ EOD;
         $this->setBC();
 
         header('Content-Type: application/pdf');
-        header('Content-Disposition: attachment; filename="document.pdf"');
 
         return $this->Output('document.pdf', $outputMode);
     }

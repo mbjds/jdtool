@@ -2,7 +2,7 @@
 
 namespace JDCustom;
 
-use JDCustom\ajax\vPDF;
+use JDCustom\ajax\jdAjax;
 use JDCustom\voucher\aeroVoucher;
 use JDCustom\voucher\voucherInit;
 
@@ -21,7 +21,7 @@ class jdinit
         new jd_toolset();
         new voucherInit();
         $av = new aeroVoucher();
-        new vPDF();
+        new jdAjax();
 
 
         add_action('woocommerce_thankyou', [$av, 'generateVoucher']);

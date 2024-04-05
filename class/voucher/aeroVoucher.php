@@ -21,13 +21,13 @@ class aeroVoucher
         $this->posttype = 'aerovouchers';
     }
 
-    public function insertVoucher($order_id, $voucherCode, $vip, $salesLineID, $created = false, $used = false, $reservation = false, $reservationDate = false)
+    public function insertVoucher($order_id, $voucherCode, $vip, $salesLineID, $created = false, $status = 0, $closed = false, $reservationDate = false)
     {
         $post_id = wp_insert_post([
             'post_status' => 'publish',
             'post_type' => $this->posttype,
         ]);
-        if (false === $created) {
+        if (!$created) {
             $created = date('Y-m-d H:i:s');
         }
 
@@ -35,10 +35,10 @@ class aeroVoucher
         update_post_meta($post_id, 'voucherCode', $voucherCode);
         update_post_meta($post_id, 'vip', $vip);
         update_post_meta($post_id, 'salesLineID', $salesLineID);
-        update_post_meta($post_id, 'used', $used);
-        update_post_meta($post_id, 'reservation', $reservation);
-        update_post_meta($post_id, 'reservationDate', $reservationDate);
+        update_post_meta($post_id, 'vStatus', $status);
+        update_post_meta($post_id, 'reservation', $reservationDate);
         update_post_meta($post_id, 'created', $created);
+        update_post_meta($post_id, 'closed', $closed);
 
         return $post_id;
     }

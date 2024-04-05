@@ -36,25 +36,27 @@ class voucherInst
         };
     }
 
-    /**
-     * @param int $code - status code to render (0-4)
-     *
-     * 0- Nieaktywny
-     * 1- Wysłany
-     * 2- Zarezerwowany
-     * 3- Wykorzystany
-     * 4- Anulowany
-     */
     public function renderStatus(): void
     {
         echo match ($this->status) {
             0 => 'Nieaktywny',
-            1 => 'Wysłany',
+            1 => 'Aktywny',
             2 => 'Zarezerwowany',
             3 => 'Wykorzystany',
             4 => 'Anulowany',
             default => 'Nieznany',
         };
+    }
+
+    public function activateVoucher(): array
+    {
+        if (0 == $this->status) {
+            update_post_meta($this->vid, 'vStatus', 1);
+
+            return ['status' => 'success', 'message' => 'Voucher aktywowany'];
+        }
+
+        return ['status' => 'error', 'message' => 'Voucher nie może być aktywowany'];
     }
 
     public function renderDate($date): void
