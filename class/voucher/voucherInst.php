@@ -2,6 +2,9 @@
 
 namespace JDCustom\voucher;
 
+/**
+ * Class voucher instance for single voucher.
+ */
 class voucherInst
 {
     private int $vid;
@@ -14,11 +17,19 @@ class voucherInst
         //	$this->post = get_post($this->vid);
     }
 
-    public function getMeta($meta)
+    /**
+     * @param $meta - meta key
+     *
+     * Wrapper for get_post_meta
+     */
+    public function getMeta($meta): mixed
     {
         return get_post_meta($this->vid, $meta, true);
     }
 
+    /**
+     * @return string - url to order edit page wich contains voucher
+     */
     public function getOrderLink(): string
     {
         $order = wc_get_order($this->getMeta('order_id'));
@@ -27,6 +38,9 @@ class voucherInst
         return '<a href="'.$url.'">'.$this->getMeta('order_id').' </a>';
     }
 
+    /**
+     * @param $val bool - value to render
+     */
     public function renderBool($val): void
     {
         echo match ($val) {
@@ -48,6 +62,11 @@ class voucherInst
         };
     }
 
+    /**
+     * Method to activate voucher ( change status 0 to 1).
+     *
+     * @return array - status of the activation
+     */
     public function activateVoucher(): array
     {
         if (0 == $this->status) {
