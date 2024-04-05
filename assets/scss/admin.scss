@@ -11,3 +11,15 @@
   width: 25px !important;
   text-align: center !important;
 }
+tr.type-aerovouchers {
+  td.column-actions{
+    display: flex;
+    justify-content: end;
+    padding-right: 20px;
+    i:hover{
+      color: #0073aa !important;
+      cursor: pointer;
+
+    }
+  }
+}

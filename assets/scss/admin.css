@@ -12,4 +12,14 @@
   text-align: center !important;
 }
 
+tr.type-aerovouchers td.column-actions {
+  display: flex;
+  justify-content: end;
+  padding-right: 20px;
+}
+tr.type-aerovouchers td.column-actions i:hover {
+  color: #0073aa !important;
+  cursor: pointer;
+}
+
 /*# sourceMappingURL=admin.css.map */

@@ -19,7 +19,7 @@ use JDCustom\jdinit;
 
 function custom_phone_number_error_message($error)
 {
-    if ($error === '<strong>Numer telefonu płatnika</strong> nie jest poprawnym numerem telefonu.' || $error === '<strong>Numer telefonu płatnika</strong> jest wymaganym polem.') {
+    if ('<strong>Numer telefonu płatnika</strong> nie jest poprawnym numerem telefonu.' === $error || '<strong>Numer telefonu płatnika</strong> jest wymaganym polem.' === $error) {
         $error = '';
     }
 
@@ -32,31 +32,24 @@ add_action('woocommerce_checkout_process', 'jds_custom_checkout_field_process');
 
 function jds_custom_checkout_field_process()
 {
-
     global $woocommerce;
 
-
-    if (!(preg_match('/^(?:(?:\+|00)\d{2})?[ -]?(\d{2}[ -]?\d{3}[ -]?\d{2}[ -]?\d{2}|\d{3}[ -]?\d{3}[ -]?\d{3})$/',
-        $_POST['billing_phone']))) {
-
+    if (!preg_match(
+        '/^(?:(?:\+|00)\d{2})?[ -]?(\d{2}[ -]?\d{3}[ -]?\d{2}[ -]?\d{2}|\d{3}[ -]?\d{3}[ -]?\d{3})$/',
+        $_POST['billing_phone']
+    )) {
         wc_add_notice(get_option('phone_notice'), 'error');
-
     }
 
-    if ($_POST['vat_no'] === '' && $_POST['vat_choose']) {
+    if ('' === $_POST['vat_no'] && $_POST['vat_choose']) {
         wc_add_notice(get_option('vat_empty'), 'error');
-
-    } elseif ($_POST['vat_no'] !== '' && !jdHelpers::checkNip($_POST['vat_no']) && $_POST['vat_choose']) {
+    } elseif ('' !== $_POST['vat_no'] && !jdHelpers::checkNip($_POST['vat_no']) && $_POST['vat_choose']) {
         wc_add_notice(get_option('vat_invalid'), 'error');
-
     }
 
     if (!$_POST['billing_company2'] && $_POST['vat_choose']) {
         wc_add_notice(get_option('company_invalid'), 'error');
     }
-
-
 }
-
 
 jdinit::init();
