@@ -2,10 +2,14 @@
 
 namespace JDCustom\pdf;
 
+use JDCustom\voucher\voucherInst;
+
 class makePDF extends \TCPDF
 {
     private string $voucherID;
     private array $bcStyle;
+    private voucherInst $instance;
+    private string $voucherCode;
 
     public function __construct(int|string $voucherID)
     {
@@ -30,7 +34,11 @@ class makePDF extends \TCPDF
             'module_width' => 1,
             'module_height' => 1,
         ];
+        $this->instance = new voucherInst($voucherID);
+
         $this->voucherID = $voucherID;
+        $this->voucherCode = $this->instance->getVoucherCode();
+        $this->expires = $this->instance->calculteVoucherExireDate();
         //    $this->voucherID = '22-9324-22';
     }
 
@@ -45,14 +53,98 @@ class makePDF extends \TCPDF
     public function Footer()
     {
         $this->SetFont('dejavusans', 'I', 9);
-        $this->writeHTMLCell($this->getPageWidth(), 20, 0, 272, '<hr style="height: 2px">', 0, 0, false, true, 'center', false);
+        $this->writeHTMLCell(
+            $this->getPageWidth(),
+            20,
+            0,
+            272,
+            '<hr style="height: 2px">',
+            0,
+            0,
+            false,
+            true,
+            'center',
+            false
+        );
 
-        $this->writeHTMLCell(0, 0, 5, 275, '<img width="72px" src="https://t.whooooops.com/wp-content/uploads/2021/08/Eska_odlot.png">', 0, 0, false, true, 'center', false);
-        $this->writeHTMLCell(0, 0, 90, 275, '<img width="72px" src="https://t.whooooops.com/wp-content/uploads/2021/02/Logomaxflynowekwadrat.png">', 0, 0, false, true, 'center', false);
-        $this->writeHTMLCell(130, 0, 72, 280, '<span style=" text-align: right; "><b>Voucher nr:</b> '.$this->voucherID.' </span>', 0, 0, false, true, 'center', false);
-        $this->writeHTMLCell(130, 0, 72, 285, '<span style=" text-align: right; "><b>Ważny do:</b> 01-02-2024</span>', 0, 0, false, true, 'center', false);
-        $this->writeHTMLCell(50, 0, 35, 280, '<span style="line-height: 19px; font-size: 12px; text-align: left; font-weight: 700 ">Zarezerwuj na:</span>', 0, 0, false, true, 'center', false);
-        $this->writeHTMLCell(50, 0, 35, 287, '<span style="line-height: 19px; font-size: 14px; text-align: left; "><b>www.tunel.aero</b></span>', 0, 0, false, true, 'center', false);
+        $this->writeHTMLCell(
+            0,
+            0,
+            5,
+            275,
+            '<img width="72px" src="https://t.whooooops.com/wp-content/uploads/2021/08/Eska_odlot.png">',
+            0,
+            0,
+            false,
+            true,
+            'center',
+            false
+        );
+        $this->writeHTMLCell(
+            0,
+            0,
+            90,
+            275,
+            '<img width="72px" src="https://t.whooooops.com/wp-content/uploads/2021/02/Logomaxflynowekwadrat.png">',
+            0,
+            0,
+            false,
+            true,
+            'center',
+            false
+        );
+        $this->writeHTMLCell(
+            130,
+            0,
+            72,
+            280,
+            '<span style=" text-align: right; "><b>Voucher nr:</b> '.$this->voucherCode.' </span>',
+            0,
+            0,
+            false,
+            true,
+            'center',
+            false
+        );
+        $this->writeHTMLCell(
+            130,
+            0,
+            72,
+            285,
+            '<span style=" text-align: right; "><b>Ważny do:</b> '.$this->expires.'</span>',
+            0,
+            0,
+            false,
+            true,
+            'center',
+            false
+        );
+        $this->writeHTMLCell(
+            50,
+            0,
+            35,
+            280,
+            '<span style="line-height: 19px; font-size: 12px; text-align: left; font-weight: 700 ">Zarezerwuj na:</span>',
+            0,
+            0,
+            false,
+            true,
+            'center',
+            false
+        );
+        $this->writeHTMLCell(
+            50,
+            0,
+            35,
+            287,
+            '<span style="line-height: 19px; font-size: 14px; text-align: left; "><b>www.tunel.aero</b></span>',
+            0,
+            0,
+            false,
+            true,
+            'center',
+            false
+        );
     }
 
     public function setBC(): void
@@ -64,7 +156,7 @@ class makePDF extends \TCPDF
     public function setProductName(): void
     {
         $this->setFontSize(18);
-        $name = 'Starter dla dorosłego - 2 Loty w Tunelu Maxfly - od poniedziałku do piątku + Film';
+        $name = wc_get_order($this->instance->getMeta('order_id'))->get_item($this->instance->getSalesItemID())->get_name();
         $ts = <<<EOD
             <div style="display: block; width: 60%; height: 170px !important;  padding: 2px; text-align: center; ">
             <span style="height: 120px;">{$name}</span>
@@ -78,9 +170,13 @@ class makePDF extends \TCPDF
     public function setDedication(): void
     {
         $this->setFontSize(16);
-        $dedication = 'Na 40 urodziny dla kochanego mężą';
+        if ($this->instance->getMeta('dedication')) {
+            $dedication = $this->instance->getMeta('dedication');
+        } else {
+            $dedication = '';
+        }
         $t = <<<EOD
-<div style="width: 100%; max-height:10px; padding: 2px; text-align: center;">
+<div style="width: 100%; max-height:10px; paddin	g: 2px; text-align: center;">
 <span style="height: 20px;">{$dedication}</span>
 </div>
 EOD;
