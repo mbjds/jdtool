@@ -9,6 +9,11 @@ class jd_toolset
         add_shortcode('jds', [$this, 'shor']);
     }
 
+    /**
+     * @param $var varaible to dump
+     *
+     * Wrapper for var_dump with <pre> tag - for better readability
+     */
     public static function nicedump($var)
     {
         echo '<pre>';
@@ -16,31 +21,25 @@ class jd_toolset
         echo '</pre>';
     }
 
-    public static function getCount($val)
-    {
-        echo count($val);
-    }
-
+    /**
+     * @return array ids of orders without VIP flag
+     */
     public static function getOrdersWithoutVIPflag()
     {
         $args = [
             'limit' => -1,
             'return' => 'ids',
-            'meta_key' => 'has_vip', // The postmeta key field
-            'meta_compare' => 'NOT EXISTS', // The comparison argument
-            //	'status' => array('wc-processing', 'wc-on-hold', 'wc-pending')
+            'meta_key' => 'has_vip',
+            'meta_compare' => 'not exists',
+            'type' => 'shop_order', // filtered refunded orders
         ];
 
-        $ids = wc_get_orders($args);
-
-        $tagd = [];
-        foreach ($ids as $i => $ii) {
-            $tagd[] = $ii;
-        }
-
-        return $tagd;
+        return wc_get_orders($args);
     }
 
+    /**
+     * @return array|object|\stdClass[] number of altered orders
+     */
     public static function getVipIDs()
     {
         global $wpdb;
@@ -49,33 +48,33 @@ class jd_toolset
         $sql = "select distinct order_id from dlaextremalnych_woocommerce_order_items where order_id in ({$i}) and order_item_type = 'line_item' and order_item_name LIKE '%vip%' ";
         $resp = $wpdb->get_results($sql, ARRAY_A);
 
-        foreach ($resp as $r) {
-            if (!get_post_meta($r['order_id'], 'has_vip', true)) {
-                update_post_meta($r['order_id'], 'has_vip', true);
-            }
-        }
-
-        return count($resp);
+        return $resp;
     }
 
-    public static function getNotVipIDs()
+    public static function getNotVipIDs(): null|array|object
     {
         global $wpdb;
-
         $ids = self::getOrdersWithoutVIPflag();
         $i = implode(',', $ids);
         $sql = "select distinct order_id from dlaextremalnych_woocommerce_order_items where order_id in ({$i}) and order_item_type = 'line_item' and order_item_name NOT LIKE '%vip%' ";
         $resp = $wpdb->get_results($sql, ARRAY_A);
 
-        foreach ($resp as $r) {
-            if (null !== get_post_meta($r['order_id'], 'has_vip', true)) {
-                update_post_meta($r['order_id'], 'has_vip', false);
-            }
-        }
-
-        return count($resp);
+        return $resp;
     }
 
+    public static function markOrders(array $ids, bool $vip): void
+    {
+        $vip = $vip ? true : false;
+        foreach ($ids as $r) {
+            if (!get_post_meta($r['order_id'], 'has_vip', true)) {
+                update_post_meta($r['order_id'], 'has_vip', $vip);
+            }
+        }
+    }
+
+    /**
+     * @return null|int number of altered orders
+     */
     public static function closeOutdated()
     {
         $two_years_ago = new \DateTime('-2 years');
@@ -100,20 +99,24 @@ class jd_toolset
             $order->add_order_note('Mineła ważność vouchera', false);
             $order->set_status('wc-completed');
             $order->save();
-
-            //	self::nicedump($order);
         }
 
         return $orders;
-        //		self::nicedump($orders);
     }
 
-    public static function shor($atts) {}
+    /**
+     * Mark orders without the 'has_vip' flag.
+     *
+     * @return array altered orders for VIP and NOT VIP flag
+     */
+    public static function markVipFlag(): array
+    {
+        $vip = self::getVipIDs();
+        $nvip = self::getNotVipIDs();
 
+        return ['VIP' => $vip, 'NOT_VIP' => $nvip];
+    }
 
-	public static function sync() {
-
-
-
-	}
+    // Shortcode for testing purposes
+    public static function shor() {}
 }

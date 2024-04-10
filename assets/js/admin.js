@@ -42,6 +42,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
         let requestData = {
           action: "generatePDF",
           id: button.dataset.id,
+          code: button.dataset.code,
         };
         $.ajax({
           url: ajaxurl,
@@ -55,7 +56,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
             var blob = new Blob([data]);
             var link = document.createElement("a");
             link.href = window.URL.createObjectURL(blob);
-            link.download = requestData.id + ".pdf";
+            link.download = requestData.code + ".pdf";
 
             document.body.appendChild(link);
             link.click();

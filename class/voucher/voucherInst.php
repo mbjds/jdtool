@@ -14,7 +14,6 @@ class voucherInst
     {
         $this->vid = $id;
         $this->status = (int) get_post_meta($this->vid, 'vStatus', true);
-        //	$this->post = get_post($this->vid);
     }
 
     /**
@@ -85,5 +84,53 @@ class voucherInst
         } else {
             echo $date;
         }
+    }
+
+    public function renderIsDedication()
+    {
+        if ($this->getMeta('dedication')) {
+            echo 'Tak';
+        } else {
+            echo 'Nie';
+        }
+    }
+
+    public function getCode(): string
+    {
+        return $this->getMeta('voucherCode');
+    }
+
+    public function getSalesItemID(): int
+    {
+        return $this->getMeta('salesLineID');
+    }
+
+    public function getItemTitle()
+    {
+        //	$this->getSalesItemID();
+        return wc_get_order_item_meta($this->getSalesItemID(), 'name', true);
+    }
+
+    public function getVoucherCode(): string
+    {
+        return $this->getMeta('voucherCode');
+    }
+
+    public function calculteVoucherExireDate()
+    {
+        $created = $this->getMeta('created');
+        $vip = $this->getMeta('vip');
+        if (!$vip) {
+            $date = date('Y-m-d', strtotime($created.' + 2 year'));
+        } else {
+            $date = 'bezterminowy';
+        }
+
+        return $date;
+    }
+
+    public function setStatus($statusCode)
+    {
+        upate_post_meta($this->vid, 'vStatus', $statusCode);
     }
 }

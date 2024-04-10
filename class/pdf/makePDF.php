@@ -39,14 +39,30 @@ class makePDF extends \TCPDF
         $this->voucherID = $voucherID;
         $this->voucherCode = $this->instance->getVoucherCode();
         $this->expires = $this->instance->calculteVoucherExireDate();
-        //    $this->voucherID = '22-9324-22';
+        $this->wpUpload = get_home_url().'/wp-content/uploads/';
+        $this->voucherID = $voucherID;
     }
 
     public function Header()
     {
         $this->SetAutoPageBreak(false, 0);
-        $img_file = 'https://t.whooooops.com/wp-content/uploads/2021/12/bilet-maxfly-scaled.jpg';
-        $this->Image($img_file, 0, 0, 210, 297, '', '', '', false, 300, '', false, false, 0);
+        $img_file = get_home_url().'/wp-content/uploads/2021/12/bilet-maxfly-scaled.jpg';
+        $this->Image(
+            $img_file,
+            0,
+            0,
+            210,
+            297,
+            '',
+            '',
+            '',
+            false,
+            300,
+            '',
+            false,
+            false,
+            0
+        );
         $this->setPageMark();
     }
 
@@ -72,7 +88,7 @@ class makePDF extends \TCPDF
             0,
             5,
             275,
-            '<img width="72px" src="https://t.whooooops.com/wp-content/uploads/2021/08/Eska_odlot.png">',
+            '<img width="72px" src="'.$this->wpUpload.'2021/08/Eska_odlot.png">',
             0,
             0,
             false,
@@ -85,7 +101,7 @@ class makePDF extends \TCPDF
             0,
             90,
             275,
-            '<img width="72px" src="https://t.whooooops.com/wp-content/uploads/2021/02/Logomaxflynowekwadrat.png">',
+            '<img width="72px" src="'.$this->wpUpload.'2021/02/Logomaxflynowekwadrat.png">',
             0,
             0,
             false,

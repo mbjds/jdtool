@@ -3,7 +3,7 @@
  * Plugin Name:       JDCustom
  * Plugin URI:        https://jds-group.eu
  * Description:       Implementacja customowych zamian
- * Version:           1.0.1
+ * Version:           1.5.0
  * Requires PHP:      8.1
  * Author:            Marcin Bojarski
  * Author URI:        https://jds-group.eu
@@ -17,6 +17,8 @@ require __DIR__.'/vendor/autoload.php';
 use JDCustom\jdHelpers;
 use JDCustom\jdinit;
 
+const JD_PLUGIN_PATH = __DIR__;
+define('JD_UPLOAD_PATH', dirname(JD_PLUGIN_PATH).'/uploads/');
 function custom_phone_number_error_message($error)
 {
     if ('<strong>Numer telefonu płatnika</strong> nie jest poprawnym numerem telefonu.' === $error || '<strong>Numer telefonu płatnika</strong> jest wymaganym polem.' === $error) {

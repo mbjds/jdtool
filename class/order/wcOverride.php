@@ -8,7 +8,15 @@ use JDCustom\voucher\voucherInst;
 
 class wcOverride
 {
-    public function closeAfterPayment($order_id, $old_status, $new_status)
+    /**
+     *  Method to close order after payment fired on woocommerce_order_status_changed hook
+     * .
+     *
+     * @param mixed $order_id
+     * @param mixed $old_status
+     * @param mixed $new_status
+     */
+    public function closeAfterPayment($order_id, $old_status, $new_status): void
     {
         $aero = new aeroVoucher();
 

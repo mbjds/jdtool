@@ -11,13 +11,13 @@ class jdLog
 {
     private $logger;
 
-    public function __construct()
+    public function __construct($logName = 'jd-log')
     {
         $dateFormat = 'Y-m-d h:m:s';
-        $stream = new StreamHandler(WP_CONTENT_DIR.'/vouchers.log', Level::Debug);
+        $stream = new StreamHandler(WP_CONTENT_DIR.'/'.$logName.'.log', Level::Debug);
         $output = "%datetime% | %level_name% |  %message% \n";
         $stream->setFormatter(new LineFormatter($output, $dateFormat, true, true));
-        $this->logger = new Logger('jd-log');
+        $this->logger = new Logger($logName);
         $this->logger->pushHandler($stream);
     }
 

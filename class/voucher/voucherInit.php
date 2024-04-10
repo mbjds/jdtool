@@ -20,6 +20,7 @@ class voucherInit
             $defaults['voucherCode'] = 'Kod Vouchera';
             $defaults['vip'] = 'VIP';
             $defaults['status'] = 'Status';
+            $defaults['dedication'] = 'Dedykacja';
             $defaults['created'] = 'Utworzono';
             $defaults['reservationDate'] = 'Data rezerwacji';
             $defaults['closed'] = 'Zakończono';
@@ -64,7 +65,10 @@ class voucherInit
                 // Display an ACF field
                 $inst->renderDate($inst->getMeta('created'));
             }
-
+            if ('dedication' == $column_name) {
+                // Display an ACF field
+                $inst->renderIsDedication();
+            }
             if ('reservationDate' == $column_name) {
                 // Display an ACF field
                 $inst->renderDate($inst->getMeta('reservation'));
@@ -94,7 +98,7 @@ class voucherInit
                             } else {
                                 $render = 'rTrue';
                             }
-                            echo '<i data-id="'.$post_id.'" style="font-size: 22px; padding: 0 7px" class="'.$render.' renderPDF fa-regular fa-file-pdf"></i>';
+                            echo '<i data-id="'.$post_id.'" data-code="'.$inst->getVoucherCode().'" style="font-size: 22px; padding: 0 7px" class="'.$render.' renderPDF fa-regular fa-file-pdf"></i>';
 
                             break;
                     }

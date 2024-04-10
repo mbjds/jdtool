@@ -3,6 +3,7 @@
 namespace JDCustom;
 
 use JDCustom\ajax\jdAjax;
+use JDCustom\order\wcOverride;
 use JDCustom\voucher\aeroVoucher;
 use JDCustom\voucher\voucherInit;
 
@@ -22,10 +23,11 @@ class jdinit
         new voucherInit();
         $av = new aeroVoucher();
         new jdAjax();
-
-
+        $over = new wcOverride();
+        $help = new jdHelpers();
         add_action('woocommerce_thankyou', [$av, 'generateVoucher']);
-        //  add_action( 'woocommerce_after_order_itemmeta', array($this,'display_admin_order_item_custom_button', 10, 3 ));
+        add_action('woocommerce_order_status_changed', [$over, 'closeAfterPayment'], 10, 3);
+        add_action('woocommerce_email_before_send', [$help, 'logMailAction'], 10, 4);
     }
 
     public static function init()
@@ -38,22 +40,5 @@ class jdinit
 
         // Returns the instance
         return self::$instance;
-    }
-
-    /**
-     * @param mixed $item_id
-     * @param mixed $item
-     * @param mixed $product
-     *
-     * @throws \Exception
-     */
-    public function display_admin_order_item_custom_button($item_id, $item, $product): void
-    {
-        // Only "line" items and backend order page
-
-        //		$vv = wc_get_order_item_meta($item_id, '_vouchers'); // Get custom item meta data (array)
-
-        // Display a custom download button using custom meta for the link
-        echo 'test';
     }
 }
