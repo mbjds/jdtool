@@ -34,7 +34,7 @@ class voucherInst
         $order = wc_get_order($this->getMeta('order_id'));
         $url = $order->get_edit_order_url();
 
-        return '<a href="'.$url.'">'.$this->getMeta('order_id').' </a>';
+        return '<a href="'.$url.'">'.$this->getOrderNo().' </a>';
     }
 
     /**
@@ -132,5 +132,15 @@ class voucherInst
     public function setStatus($statusCode)
     {
         upate_post_meta($this->vid, 'vStatus', $statusCode);
+    }
+
+    public function getOrderFromVoucher(): \WC_Order
+    {
+        return wc_get_order($this->getMeta('order_id'));
+    }
+
+    public function getOrderNo(): string
+    {
+        return $this->getOrderFromVoucher()->get_meta('_order_number');
     }
 }
