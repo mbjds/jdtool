@@ -3,7 +3,7 @@
  * Plugin Name:       JDCustom
  * Plugin URI:        https://jds-group.eu
  * Description:       Implementacja customowych zamian
- * Version:           1.5.0
+ * Version:           1.5.1
  * Requires PHP:      8.1
  * Author:            Marcin Bojarski
  * Author URI:        https://jds-group.eu
@@ -53,5 +53,19 @@ function jds_custom_checkout_field_process()
         wc_add_notice(get_option('company_invalid'), 'error');
     }
 }
+
+function custom_wc_order_method()
+{
+    // Kod funkcji - możesz dodać tu dowolną logikę
+    return 'Niestandardowa metoda dla zamówienia!';
+}
+
+// Hook do dodania funkcji do klasy WC_Order
+function add_custom_wc_order_method()
+{
+    add_action('woocommerce_order_details_after_order_table', 'custom_wc_order_method');
+}
+
+add_action('woocommerce_init', 'add_custom_wc_order_method');
 
 jdinit::init();

@@ -118,5 +118,12 @@ class jd_toolset
     }
 
     // Shortcode for testing purposes
-    public static function shor() {}
+    public static function shor()
+    {
+        $no = wc_get_order(36363);
+        $items = $no->get_items();
+        foreach ($items as $item => $it) {
+            self::nicedump($it->get_product_id());
+        }
+    }
 }

@@ -80,6 +80,7 @@ class voucherInit
 
             if ('actions' == $column_name) {
                 $ii = 2;
+                echo '<i  data-id="'.$post_id.'" style="font-size: 22px; padding: 0 7px" class="rTrue editV  fa-regular  fa-pen-to-square"></i>';
                 for ($i = 0; $i < $ii; ++$i) {
                     switch ($i) {
                         case 0:
@@ -105,6 +106,8 @@ class voucherInit
                 }
             }
         }, 10, 2);
+
+        add_filter('template_include', [$this, 'custom_post_type_template']);
     }
 
     // Register Custom Post Type
@@ -161,5 +164,20 @@ class voucherInit
             'show_in_rest' => false,
         ];
         register_post_type('aeroVouchers', $args);
+    }
+
+    public function custom_post_type_template($template)
+    {
+        global $post;
+
+        if ('aerovouchers' == $post->post_type) {
+            $template_path = JD_PLUGIN_PATH.'/templates/single-aerovouchers.php';
+
+            if (file_exists($template_path)) {
+                return $template_path;
+            }
+        }
+
+        return $template;
     }
 }

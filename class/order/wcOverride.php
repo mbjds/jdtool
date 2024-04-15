@@ -34,4 +34,9 @@ class wcOverride
             }
         }
     }
+
+    public static function getOrderNo(int $id)
+    {
+        return wc_get_order($id)->get_meta('_order_number');
+    }
 }

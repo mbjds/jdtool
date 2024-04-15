@@ -3,6 +3,7 @@
 namespace JDCustom\voucher;
 
 use JDCustom\jdLog;
+use JDCustom\order\wcOverride;
 
 class aeroVoucher
 {
@@ -71,6 +72,7 @@ class aeroVoucher
         } else {
             $order = new \WC_Order($order_id);
             $year = date('y');
+            $orderNo = wcOverride::getOrderNo($order_id);
             $lp = 1;
             $stat = $order->get_status();
             if ('processing' === $stat) {
@@ -79,13 +81,21 @@ class aeroVoucher
                 $status = 0;
             }
             foreach ($order->get_items() as $id => $item) {
-                $prefix = $year.'-'.$order_id;
+                if (0 === $item->get_product_id()) {
+                    $time = '';
+                } else {
+                    $prod = $item->get_product();
+
+                    $time = $prod->get_weight();
+                }
+
+                $prefix = $time.'-'.$orderNo;
 
                 $prefix .= '-'.$lp;
                 $q = $item->get_quantity();
                 $codes = [];
                 if (true === $old) {
-                    $codes[] = $order_id;
+                    $codes[] = $orderNo;
                     $dedication = $order->get_customer_note();
                 } else {
                     for ($i = 1; $i <= $q; ++$i) {
