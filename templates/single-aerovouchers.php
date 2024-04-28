@@ -140,7 +140,6 @@ if (! current_user_can('manage_woocommerce')) {
           <script>
 
 
-            var $ = jQuery
             document.addEventListener('DOMContentLoaded', function () {
               var toastMixin = Swal.mixin({
                 toast: true,
@@ -174,7 +173,7 @@ if (! current_user_can('manage_woocommerce')) {
                   id: <?php echo get_the_ID(); ?>,
                   dedication: ded
                 }
-                $.ajax({
+                jQuery.ajax({
                   url: ajaxurl,
                   method: 'post',
                   data: requestData,
@@ -199,7 +198,7 @@ if (! current_user_can('manage_woocommerce')) {
                   id: <?php echo get_the_ID(); ?>,
                   code: '<?php echo $voucher->getCode(); ?>'
                 }
-                $.ajax({
+                jQuery.ajax({
                   url: ajaxurl,
                   method: 'post',
                   data: requestData,
