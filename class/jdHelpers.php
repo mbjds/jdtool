@@ -34,4 +34,11 @@ class jdHelpers
         $jdLog = new jdLog('mailerLog');
         $jdLog->logInfo('Mail wysłany do: '.$email->get_recipient().' z tematem: '.$email->get_subject().' dla zamówienia: '.$order->get_id());
     }
+
+    public static function accessDenied(): void
+    {
+        header('HTTP/1.1 401 Unauthorized');
+        wp_redirect('/');
+        exit();
+    }
 }

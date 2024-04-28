@@ -3,7 +3,7 @@
  * Plugin Name:       JDCustom
  * Plugin URI:        https://jds-group.eu
  * Description:       Implementacja customowych zamian
- * Version:           1.5.1
+ * Version:           1.9.9
  * Requires PHP:      8.1
  * Author:            Marcin Bojarski
  * Author URI:        https://jds-group.eu
@@ -12,13 +12,22 @@
  * Domain Path:       /languages
  */
 
-require __DIR__.'/vendor/autoload.php';
+require __DIR__ . '/vendor/autoload.php';
 
 use JDCustom\jdHelpers;
 use JDCustom\jdinit;
 
+// Add custom meta box to WooCommerce orders page
+
+/**
+ * Add custom meta box.
+ *
+ * @return void
+ */
+
+
 const JD_PLUGIN_PATH = __DIR__;
-define('JD_UPLOAD_PATH', dirname(JD_PLUGIN_PATH).'/uploads/');
+define("JD_UPLOAD_PATH", dirname(JD_PLUGIN_PATH) . '/uploads/');
 function custom_phone_number_error_message($error)
 {
     if ('<strong>Numer telefonu płatnika</strong> nie jest poprawnym numerem telefonu.' === $error || '<strong>Numer telefonu płatnika</strong> jest wymaganym polem.' === $error) {
@@ -36,7 +45,7 @@ function jds_custom_checkout_field_process()
 {
     global $woocommerce;
 
-    if (!preg_match(
+    if (! preg_match(
         '/^(?:(?:\+|00)\d{2})?[ -]?(\d{2}[ -]?\d{3}[ -]?\d{2}[ -]?\d{2}|\d{3}[ -]?\d{3}[ -]?\d{3})$/',
         $_POST['billing_phone']
     )) {
@@ -45,11 +54,11 @@ function jds_custom_checkout_field_process()
 
     if ('' === $_POST['vat_no'] && $_POST['vat_choose']) {
         wc_add_notice(get_option('vat_empty'), 'error');
-    } elseif ('' !== $_POST['vat_no'] && !jdHelpers::checkNip($_POST['vat_no']) && $_POST['vat_choose']) {
+    } elseif ('' !== $_POST['vat_no'] && ! jdHelpers::checkNip($_POST['vat_no']) && $_POST['vat_choose']) {
         wc_add_notice(get_option('vat_invalid'), 'error');
     }
 
-    if (!$_POST['billing_company2'] && $_POST['vat_choose']) {
+    if (! $_POST['billing_company2'] && $_POST['vat_choose']) {
         wc_add_notice(get_option('company_invalid'), 'error');
     }
 }

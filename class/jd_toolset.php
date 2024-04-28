@@ -6,7 +6,7 @@ class jd_toolset
 {
     public function __construct()
     {
-        add_shortcode('jds', [$this, 'shor']);
+        add_shortcode('jds', [ $this, 'shor' ]);
     }
 
     /**
@@ -27,11 +27,11 @@ class jd_toolset
     public static function getOrdersWithoutVIPflag()
     {
         $args = [
-            'limit' => -1,
-            'return' => 'ids',
-            'meta_key' => 'has_vip',
+            'limit'        => - 1,
+            'return'       => 'ids',
+            'meta_key'     => 'has_vip',
             'meta_compare' => 'not exists',
-            'type' => 'shop_order', // filtered refunded orders
+            'type'         => 'shop_order', // filtered refunded orders
         ];
 
         return wc_get_orders($args);
@@ -43,9 +43,9 @@ class jd_toolset
     public static function getVipIDs()
     {
         global $wpdb;
-        $ids = self::getOrdersWithoutVIPflag();
-        $i = implode(',', $ids);
-        $sql = "select distinct order_id from dlaextremalnych_woocommerce_order_items where order_id in ({$i}) and order_item_type = 'line_item' and order_item_name LIKE '%vip%' ";
+        $ids  = self::getOrdersWithoutVIPflag();
+        $i    = implode(',', $ids);
+        $sql  = "select distinct order_id from dlaextremalnych_woocommerce_order_items where order_id in ({$i}) and order_item_type = 'line_item' and order_item_name LIKE '%vip%' ";
         $resp = $wpdb->get_results($sql, ARRAY_A);
 
         return $resp;
@@ -54,9 +54,9 @@ class jd_toolset
     public static function getNotVipIDs(): null|array|object
     {
         global $wpdb;
-        $ids = self::getOrdersWithoutVIPflag();
-        $i = implode(',', $ids);
-        $sql = "select distinct order_id from dlaextremalnych_woocommerce_order_items where order_id in ({$i}) and order_item_type = 'line_item' and order_item_name NOT LIKE '%vip%' ";
+        $ids  = self::getOrdersWithoutVIPflag();
+        $i    = implode(',', $ids);
+        $sql  = "select distinct order_id from dlaextremalnych_woocommerce_order_items where order_id in ({$i}) and order_item_type = 'line_item' and order_item_name NOT LIKE '%vip%' ";
         $resp = $wpdb->get_results($sql, ARRAY_A);
 
         return $resp;
@@ -66,7 +66,7 @@ class jd_toolset
     {
         $vip = $vip ? true : false;
         foreach ($ids as $r) {
-            if (!get_post_meta($r['order_id'], 'has_vip', true)) {
+            if (! get_post_meta($r['order_id'], 'has_vip', true)) {
                 update_post_meta($r['order_id'], 'has_vip', $vip);
             }
         }
@@ -78,20 +78,20 @@ class jd_toolset
     public static function closeOutdated()
     {
         $two_years_ago = new \DateTime('-2 years');
-        $two = $two_years_ago->format('d-m-Y');
-        $query = new \WC_Order_Query([
-            'limit' => -1,
-            'orderby' => 'date',
-            'order' => 'DESC',
-            'status' => ['wc-processing', 'wc-pending'],
-            'date_created' => '<'.$two,
-            'meta_key' => 'has_vip',
-            'meta_value' => false,
+        $two           = $two_years_ago->format('d-m-Y');
+        $query         = new \WC_Order_Query([
+            'limit'        => - 1,
+            'orderby'      => 'date',
+            'order'        => 'DESC',
+            'status'       => [ 'wc-processing', 'wc-pending' ],
+            'date_created' => '<' . $two,
+            'meta_key'     => 'has_vip',
+            'meta_value'   => false,
             'meta_compare' => '=',
 
             'return' => 'ids',
         ]);
-        $orders = $query->get_orders();
+        $orders        = $query->get_orders();
 
         foreach ($orders as $id) {
             $order = wc_get_order($id);
@@ -111,19 +111,33 @@ class jd_toolset
      */
     public static function markVipFlag(): array
     {
-        $vip = self::getVipIDs();
+        $vip  = self::getVipIDs();
         $nvip = self::getNotVipIDs();
 
-        return ['VIP' => $vip, 'NOT_VIP' => $nvip];
+        return [ 'VIP' => $vip, 'NOT_VIP' => $nvip ];
     }
 
     // Shortcode for testing purposes
     public static function shor()
     {
-        $no = wc_get_order(36363);
-        $items = $no->get_items();
-        foreach ($items as $item => $it) {
-            self::nicedump($it->get_product_id());
+        $args = array(
+            'limit'   => 100,
+            'orderby' => 'date',
+            'order'   => 'DESC',
+        );
+
+        $orders = wc_get_orders($args);
+        $i      = 1;
+        foreach ($orders as $order) {
+            $v  = $order->get_id();
+            $v1 = $order->get_meta('_order_number', true);
+
+            if ($v != $v1) {
+                ++ $i;
+                ;
+            };
+
         }
+        echo $i;
     }
 }

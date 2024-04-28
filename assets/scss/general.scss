@@ -1,0 +1,125 @@
+.jd-block {
+  padding: 20px;
+}
+
+.container-jd {
+  inset: 40px 35px auto auto !important;
+
+  z-index: 999999;
+  max-width: 500px;
+}
+
+.jd-container {
+  display: flex;
+  flex-wrap: nowrap;
+  font-family: "Montserrat", sans-serif;
+
+  * {
+    font-family: inherit;
+  }
+}
+
+.jd-title-container {
+  display: flex;
+  justify-content: center;
+  padding: 30px 0;
+}
+
+.jd-col-50 {
+  flex: 50%;
+}
+
+.jd-row {
+  h3 {
+    font-weight: bold;
+  }
+
+  display: flex;
+}
+
+.row-col {
+  flex-direction: column;
+}
+
+.jd-left {
+  flex: 30%;
+  font-weight: bold;
+}
+
+.jd-right {
+  flex: 70%;
+}
+
+.jd-heading {
+  h1 {
+    text-transform: uppercase;
+  }
+
+  text-align: center;
+}
+
+.loading-state {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgb(9 6 6 / 63%);
+  z-index: 9999;
+  display: none;
+  justify-content: center;
+  align-items: center;
+}
+
+.loading {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  border: 15px solid #ddd;
+  border-top-color: #ed6516;
+  animation: loading 1s linear infinite;
+}
+
+@keyframes loading {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.popup-jd {
+  padding: 20px !important;
+  border-radius: 15px !important;
+  box-shadow:
+    0 0 1px rgba(0, 0, 0, 0.075),
+    0 1px 2px rgba(0, 0, 0, 0.075),
+    1px 2px 4px rgba(0, 0, 0, 0.075),
+    1px 3px 8px rgba(0, 0, 0, 0.075),
+    2px 4px 16px rgba(0, 0, 0, 0.075);
+}
+
+.jd-input-ajax {
+  width: auto !important;
+}
+
+.action-buttons {
+  display: flex;
+  justify-content: space-evenly;
+}
+.jd-reservation{
+  width: 100%;
+  display: flex;
+  background: #ed6516;
+  border: none;
+  border-radius: 3px;
+  padding: 30px 0;
+  margin-bottom: 30px;
+  color: white;
+}
+
+.jd-button{
+  background: white;
+  display: flex;
+  color: #ed6516;
+  margin: 0;
+  padding: 10px 25px;
+}

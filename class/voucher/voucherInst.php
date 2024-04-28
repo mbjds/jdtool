@@ -12,12 +12,12 @@ class voucherInst
 
     public function __construct($id)
     {
-        $this->vid = $id;
+        $this->vid    = $id;
         $this->status = (int) get_post_meta($this->vid, 'vStatus', true);
     }
 
     /**
-     * @param $meta - meta key
+     * @param $meta  - meta key
      *
      * Wrapper for get_post_meta
      */
@@ -32,9 +32,17 @@ class voucherInst
     public function getOrderLink(): string
     {
         $order = wc_get_order($this->getMeta('order_id'));
-        $url = $order->get_edit_order_url();
+        $url   = $order->get_edit_order_url();
 
-        return '<a href="'.$url.'">'.$this->getOrderNo().' </a>';
+        return '<a href="' . $url . '">' . $this->getOrderNo() . ' </a>';
+    }
+
+    public function getOrderViewLink(): string
+    {
+        $order = wc_get_order($this->getMeta('order_id'));
+        $url   = $order->get_view_order_url();
+
+        return '<a href="' . $url . '">' . $this->getOrderNo() . ' </a>';
     }
 
     /**
@@ -52,11 +60,11 @@ class voucherInst
     public function renderStatus(): void
     {
         echo match ($this->status) {
-            0 => 'Nieaktywny',
-            1 => 'Aktywny',
-            2 => 'Zarezerwowany',
-            3 => 'Wykorzystany',
-            4 => 'Anulowany',
+            0 => '<span style="font-weight: bold; color: #a9a1a1">Nieaktywny</span>',
+            1 => '<span style="font-weight: bold; color: green">Aktywny</span>',
+            2 => '<span style="font-weight: bold; color: blue">Zarezerwowany</span>',
+            3 => '<span style="font-weight: bold; color: #c17e0e">Wykorzystany</span>',
+            4 => '<span style="font-weight: bold; color: red">Anulowany</span>',
             default => 'Nieznany',
         };
     }
@@ -71,15 +79,15 @@ class voucherInst
         if (0 == $this->status) {
             update_post_meta($this->vid, 'vStatus', 1);
 
-            return ['status' => 'success', 'message' => 'Voucher aktywowany'];
+            return [ 'status' => 'success', 'message' => 'Voucher aktywowany' ];
         }
 
-        return ['status' => 'error', 'message' => 'Voucher nie może być aktywowany'];
+        return [ 'status' => 'error', 'message' => 'Voucher nie może być aktywowany' ];
     }
 
     public function renderDate($date): void
     {
-        if (!$date) {
+        if (! $date) {
             echo '----';
         } else {
             echo $date;
@@ -107,8 +115,11 @@ class voucherInst
 
     public function getItemTitle()
     {
-        //	$this->getSalesItemID();
-        return wc_get_order_item_meta($this->getSalesItemID(), 'name', true);
+        //	;
+        global $wpdb;
+        $sql = 'select order_item_name from dlaextremalnych_woocommerce_order_items where order_item_id = ' . $this->getSalesItemID();
+
+        return $wpdb->get_results($sql, ARRAY_A)[0]['order_item_name'];
     }
 
     public function getVoucherCode(): string
@@ -119,9 +130,9 @@ class voucherInst
     public function calculteVoucherExireDate()
     {
         $created = $this->getMeta('created');
-        $vip = $this->getMeta('vip');
-        if (!$vip) {
-            $date = date('Y-m-d', strtotime($created.' + 2 year'));
+        $vip     = $this->getMeta('vip');
+        if (! $vip) {
+            $date = date('Y-m-d', strtotime($created . ' + 2 year'));
         } else {
             $date = 'bezterminowy';
         }
@@ -131,7 +142,7 @@ class voucherInst
 
     public function setStatus($statusCode)
     {
-        upate_post_meta($this->vid, 'vStatus', $statusCode);
+        update_post_meta($this->vid, 'vStatus', $statusCode);
     }
 
     public function getOrderFromVoucher(): \WC_Order
@@ -142,5 +153,44 @@ class voucherInst
     public function getOrderNo(): string
     {
         return $this->getOrderFromVoucher()->get_meta('_order_number');
+    }
+
+    public function getDedication()
+    {
+        return $this->getMeta('dedication');
+    }
+
+    public function convertDedication()
+    {
+        $converted = $this->getDedication();
+        $conv      = str_replace('<br>', '&#13;&#10;', $converted);
+
+        return $conv;
+    }
+
+    public function setDedication($dedication)
+    {
+        return update_post_meta($this->vid, 'dedication', $dedication);
+    }
+
+    public function getOrderDate()
+    {
+        return $this->getOrderFromVoucher()->get_date_created('view');
+    }
+
+    public function formatDates($date)
+    {
+        return date('Y-m-d', strtotime($date));
+    }
+
+    public function getEmailFromOrdeer(): string
+    {
+        return $this->getOrderFromVoucher()->get_billing_email('view');
+    }
+
+    public function getCustomerID()
+    {
+        return $this->getOrderFromVoucher()->get_customer_id('view');
+
     }
 }

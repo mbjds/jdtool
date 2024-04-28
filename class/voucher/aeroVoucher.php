@@ -23,7 +23,7 @@ class aeroVoucher
     public function __construct()
     {
         $this->posttype = 'aerovouchers';
-        $this->log = new jdLog();
+        $this->log      = new jdLog();
     }
 
     public function insertVoucher(
@@ -32,22 +32,26 @@ class aeroVoucher
         $vip,
         $salesLineID,
         $status = 0,
-        $dedication = null,
+        $dedication = false,
         $created = false,
         $closed = false,
         $reservationDate = false
     ) {
-        if (!$this->voucherExists($voucherCode)) {
+        if (! $this->voucherExists($voucherCode)) {
+            $order = wc_get_order($order_id);
+            $auth  = $order->get_customer_id();
+
             $post_id = wp_insert_post([
                 'post_status' => 'publish',
-                'post_type' => $this->posttype,
+                'post_type'   => $this->posttype,
+                'post_author' => $auth
             ]);
 
-            if (!$created) {
+            if (! $created) {
                 $created = date('Y-m-d H:i:s');
             }
 
-            $this->log->logInfo('Voucher: '.$voucherCode.' został utworzony');
+            $this->log->logInfo('Voucher: ' . $voucherCode . ' został utworzony');
 
             update_post_meta($post_id, 'order_id', $order_id);
             update_post_meta($post_id, 'voucherCode', $voucherCode);
@@ -57,7 +61,10 @@ class aeroVoucher
             update_post_meta($post_id, 'reservation', $reservationDate);
             update_post_meta($post_id, 'created', $created);
             update_post_meta($post_id, 'closed', $closed);
-            update_post_meta($post_id, 'dedication', $dedication);
+            if ($dedication) {
+                update_post_meta($post_id, 'dedication', $dedication);
+            }
+
 
             return $post_id;
         }
@@ -68,13 +75,13 @@ class aeroVoucher
     public function generateVoucher(int $order_id, $old = false): void
     {
         if (true == get_post_meta($order_id, 'hasVouchers', true)) {
-            $this->log->logWarning('Vouchers for order '.$order_id.' already generated');
+            $this->log->logWarning('Vouchers for order ' . $order_id . ' already generated');
         } else {
-            $order = new \WC_Order($order_id);
-            $year = date('y');
+            $order   = new \WC_Order($order_id);
+            $year    = date('y');
             $orderNo = wcOverride::getOrderNo($order_id);
-            $lp = 1;
-            $stat = $order->get_status();
+            $lp      = 1;
+            $stat    = $order->get_status();
             if ('processing' === $stat) {
                 $status = 1;
             } else {
@@ -89,17 +96,17 @@ class aeroVoucher
                     $time = $prod->get_weight();
                 }
 
-                $prefix = $time.'-'.$orderNo;
+                $prefix = $time . '-' . $orderNo;
 
-                $prefix .= '-'.$lp;
-                $q = $item->get_quantity();
-                $codes = [];
+                $prefix .= '-' . $lp;
+                $q      = $item->get_quantity();
+                $codes  = [];
                 if (true === $old) {
-                    $codes[] = $orderNo;
+                    $codes[]    = $orderNo;
                     $dedication = $order->get_customer_note();
                 } else {
-                    for ($i = 1; $i <= $q; ++$i) {
-                        $codes[] = $prefix.$i;
+                    for ($i = 1; $i <= $q; ++ $i) {
+                        $codes[] = $prefix . $i;
                     }
                 }
 
@@ -119,7 +126,7 @@ class aeroVoucher
                     $this->insertVoucher($order_id, $code, $vip, $id, $status, $dedication, $date);
                 }
 
-                ++$lp;
+                ++ $lp;
             }
             self::hasVoucherGenerated($order_id);
         }
@@ -128,11 +135,11 @@ class aeroVoucher
     public function getVouchersIDByOrder($order_id)
     {
         $attrs = [
-            'post_type' => $this->posttype,
-            'meta_key' => 'order_id',
-            'meta_value' => $order_id,
-            'fields' => 'ids',
-            'numberposts' => -1,
+            'post_type'   => $this->posttype,
+            'meta_key'    => 'order_id',
+            'meta_value'  => $order_id,
+            'fields'      => 'ids',
+            'numberposts' => - 1,
         ];
 
         return get_posts($attrs);
@@ -141,10 +148,10 @@ class aeroVoucher
     public function getVouchersIDBySalesLine($salesLine)
     {
         $attrs = [
-            'post_type' => $this->posttype,
-            'meta_key' => 'salesLineID',
+            'post_type'  => $this->posttype,
+            'meta_key'   => 'salesLineID',
             'meta_value' => $salesLine,
-            'fields' => 'ids',
+            'fields'     => 'ids',
         ];
 
         return get_posts($attrs);
@@ -154,7 +161,7 @@ class aeroVoucher
     {
         global $wpdb;
 
-        $sql = 'select post_id from dlaextremalnych_postmeta where meta_key = "voucherCode" and meta_value = "'.$code.'"';
+        $sql = 'select post_id from dlaextremalnych_postmeta where meta_key = "voucherCode" and meta_value = "' . $code . '"';
 
         $res = [];
 
@@ -165,7 +172,7 @@ class aeroVoucher
                 $res['ids'][] = $i->post_id;
             }
             $res['exists'] = true;
-            $this->log->logWarning('Voucher: '.$code.' istnieje w bazie danych.');
+            $this->log->logWarning('Voucher: ' . $code . ' istnieje w bazie danych.');
 
             return $res;
         }
@@ -181,12 +188,12 @@ class aeroVoucher
     public static function getOrdersWithoutVouchers()
     {
         $args = [
-            'limit' => -1,
-            'return' => 'ids',
-            'meta_key' => 'hasVouchers',
+            'limit'        => - 1,
+            'return'       => 'ids',
+            'meta_key'     => 'hasVouchers',
             'meta_compare' => 'not exists',
-            'status' => ['wc-processing', 'wc-pending'],
-            'type' => 'shop_order', // filtered refunded orders
+            'status'       => [ 'wc-processing', 'wc-pending' ],
+            'type'         => 'shop_order', // filtered refunded orders
         ];
 
         return wc_get_orders($args);
